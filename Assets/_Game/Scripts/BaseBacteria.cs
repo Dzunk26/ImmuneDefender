@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BaseBacteria : MonoBehaviour {
     [Header("Movement Settings")]
-    public float speed = 0.5f;              // Tốc độ cơ bản
+    public float moveSpeed = 0.5f;              // Tốc độ cơ bản
 
     [Header("Smooth Turning")]
     public float turnSpeed = 0.2f;            // Tốc độ xoay hướng (càng nhỏ càng chậm/mượt, thử 1.5-4.0)
@@ -14,12 +14,12 @@ public class BaseBacteria : MonoBehaviour {
     private float multiplicationTimer;
     private float multiplicationTimerMax = 10f;
 
-    private Rigidbody rb;
+    protected Rigidbody rb;
     private Vector3 currentDirection;
     private Vector3 desiredDirection;
 
-    public virtual void TakeDamage(int damage) { 
-        hp -= damage;
+    public virtual void TakeDamage(IAttackerStat attackerStat) {
+        hp -= attackerStat.Damage;
         if (hp <= 0) {
             Die();
         }
@@ -29,11 +29,13 @@ public class BaseBacteria : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    public virtual void OnUpdate() { }
+    public virtual void Eat() { }
+
+    public virtual void Eaten() { }
 
     private void Start() {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        //rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
         currentDirection = Random.onUnitSphere;
         currentDirection.y = 0f;
@@ -42,13 +44,7 @@ public class BaseBacteria : MonoBehaviour {
         desiredDirection = currentDirection;
     }
 
-    private void Update(){
-        HandleMovevement();
-        HanleMultiplication();
-        OnUpdate();
-    }
-
-    public void HandleMovevement() {
+    protected void HandleMovevement() {
         // Tạo noise thay đổi dần dần (dùng sin/cos để mượt, giống Perlin đơn giản)
         float time = Time.deltaTime;
 
@@ -68,7 +64,7 @@ public class BaseBacteria : MonoBehaviour {
         currentDirection.Normalize();
 
         // Áp dụng velocity
-        Vector3 targetVelocity = currentDirection * speed;
+        Vector3 targetVelocity = currentDirection * moveSpeed;
         rb.velocity = new Vector3(targetVelocity.x, 0f, targetVelocity.z);
 
         // Xoay model vi khuẩn theo hướng di chuyển (mượt bằng Slerp)
@@ -78,7 +74,7 @@ public class BaseBacteria : MonoBehaviour {
         }
     }
 
-    private void HanleMultiplication() {
+    protected void HanleMultiplication() {
         multiplicationTimer += Time.deltaTime;
 
         if (multiplicationTimer > multiplicationTimerMax) {

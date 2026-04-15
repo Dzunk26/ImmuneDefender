@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IBiofilmable {
-    public void BreakShield();
+//hai khuan binh thuong
+public class NormalBacteria : BaseBacteria {
+
+
 }

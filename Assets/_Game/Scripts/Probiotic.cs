@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IBiofilmable {
-    public void BreakShield();
+//loi khuan
+public class Probiotic : BaseBacteria {
+
 }

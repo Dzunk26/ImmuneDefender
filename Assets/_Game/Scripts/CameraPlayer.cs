@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraPlayer : MonoBehaviour {
-    [SerializeField] private float moveSpeed = 7f;
+public class CameraPlayer : MonoBehaviour, IAttackerStat {
+    public int Damage => lazeDamage;
+    public int Accuracy => accuracy;
+
     [SerializeField] private GameInput gameInput;
-    [SerializeField] private int lazeDamage = 1;
+
+    private float moveSpeed = 7f;
+    private int lazeDamage = 1;
+    private int accuracy = 100;
+
 
     private void Start() {
         gameInput.OnInteractAction += GameInput_OnInteractAction;
@@ -29,7 +35,7 @@ public class CameraPlayer : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity)) {
             if (hit.transform.TryGetComponent(out BaseBacteria bacteria)) {
-                bacteria.TakeDamage(lazeDamage);
+                bacteria.TakeDamage(this);
             }
         }
     }
