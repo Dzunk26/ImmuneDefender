@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseBacteria : MonoBehaviour {
+    public event EventHandler OnDeath;
+
     [Header("Movement Settings")]
     public float moveSpeed = 0.5f;              // Tốc độ cơ bản
 
@@ -10,6 +13,7 @@ public class BaseBacteria : MonoBehaviour {
     public float turnSpeed = 0.2f;            // Tốc độ xoay hướng (càng nhỏ càng chậm/mượt, thử 1.5-4.0)
     public float wanderStrength = 0.2f;       // Độ "lượn" mạnh (noise intensity)
     private int hp = 1;
+    protected int trophicLevel = 0; //thu bac trong chuoi thuc an
 
     private float multiplicationTimer;
     private float multiplicationTimerMax = 10f;
@@ -26,6 +30,7 @@ public class BaseBacteria : MonoBehaviour {
     }
 
     public virtual void Die() {
+        OnDeath?.Invoke(this, EventArgs.Empty);
         Destroy(gameObject);
     }
 
@@ -37,7 +42,7 @@ public class BaseBacteria : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         //rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-        currentDirection = Random.onUnitSphere;
+        currentDirection = UnityEngine.Random.onUnitSphere;
         currentDirection.y = 0f;
         currentDirection.Normalize();
 
@@ -80,5 +85,9 @@ public class BaseBacteria : MonoBehaviour {
         if (multiplicationTimer > multiplicationTimerMax) {
             // nhân đôi
         }
+    }
+
+    public int GetTrophicLevel() {
+        return trophicLevel;
     }
 }
