@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,18 +7,17 @@ using UnityEngine;
 public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
     private int dodgeChance = 100;
     private float slideSpeed = 10f;
+    private float slideTimerMax = 1f;
+
     private bool isSliding = false;
     private float slideTimer;
-    private float slideTimerMax = 0.35f;
+    private Vector3 slideDirection;
 
     private void Update() {
         HanleMultiplication();
 
         if (isSliding) {
-            slideTimer += Time.deltaTime;
-            if (slideTimer > slideTimerMax) {
-                isSliding = false;
-            }
+            HandleSlide();
         }
         else {
             HandleMovevement();
@@ -44,8 +43,20 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
     public void OnDodgeSuccess() {
         isSliding = true;
         slideTimer = 0;
-
-        rb.velocity = transform.forward.normalized * slideSpeed;
+        slideDirection = transform.forward;
         Debug.Log("Dodge");
+    }
+
+    private void HandleSlide() {
+        slideTimer += Time.deltaTime;
+
+        // Tự move theo slideDirection thay vì dùng velocity
+        float speedThisFrame = Mathf.Lerp(slideSpeed, 0f, slideTimer / slideTimerMax); // giảm dần
+        transform.position += slideDirection * speedThisFrame * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, 0f, transform.position.z); // lock Y
+
+        if (slideTimer >= slideTimerMax) {
+            isSliding = false;
+        }
     }
 }

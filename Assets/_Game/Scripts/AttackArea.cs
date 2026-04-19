@@ -8,7 +8,7 @@ public class AttackArea : MonoBehaviour, IAttackerStat {
 
     [SerializeField] private MacrophageSight macrophageSight;
 
-    private int damage = 1;
+    private int damage = 3;
     private int accuracy = 200;
 
     private void OnTriggerEnter(Collider other) {

@@ -11,7 +11,10 @@ public class BaseBacteria : MonoBehaviour {
 
     [Header("Smooth Turning")]
     public float turnSpeed = 0.2f;            // Tốc độ xoay hướng (càng nhỏ càng chậm/mượt, thử 1.5-4.0)
-    public float wanderStrength = 0.2f;       // Độ "lượn" mạnh (noise intensity)
+    [SerializeField] private float waypointDistance = 0.1f;  // khoảng cách coi là "đến nơi"
+    [SerializeField] private float waypointRadius = 2f;      // bán kính random waypoint
+    [SerializeField] private float waypointAngle = 120f;     // góc trước mặt để random
+    [SerializeField] private float waypointTimerMax = 3f;    // thời gian tối đa trước khi random lại
     private int hp = 1;
     protected int trophicLevel = 0; //thu bac trong chuoi thuc an
 
@@ -19,8 +22,8 @@ public class BaseBacteria : MonoBehaviour {
     private float multiplicationTimerMax = 10f;
 
     protected Rigidbody rb;
-    private Vector3 currentDirection;
-    private Vector3 desiredDirection;
+    private Vector3 currentWaypoint;
+    private float waypointTimer;
 
     public virtual void TakeDamage(IAttackerStat attackerStat) {
         hp -= attackerStat.Damage;
@@ -42,41 +45,51 @@ public class BaseBacteria : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         //rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-        currentDirection = UnityEngine.Random.onUnitSphere;
-        currentDirection.y = 0f;
-        currentDirection.Normalize();
-
-        desiredDirection = currentDirection;
+        currentWaypoint = GetRandomWaypoint();
     }
 
     protected void HandleMovevement() {
-        // Tạo noise thay đổi dần dần (dùng sin/cos để mượt, giống Perlin đơn giản)
-        float time = Time.deltaTime;
+        waypointTimer += Time.deltaTime;
 
-        Vector3 noise = new Vector3(
-            Mathf.Sin(time * 1.1f) * 0.6f + Mathf.Cos(time * 0.7f) * 0.4f,
-            0f,
-            Mathf.Sin(time * 0.9f) * 0.7f + Mathf.Cos(time * 1.3f) * 0.3f
-        ) * wanderStrength;
+        // Random waypoint mới nếu đến nơi hoặc hết thời gian
+        bool arrivedAtWaypoint = Vector3.Distance(transform.position, currentWaypoint) < waypointDistance;
+        bool waypointExpired = waypointTimer >= waypointTimerMax;
 
-        // Desired hướng thay đổi chậm theo noise
-        desiredDirection += noise * time;
-        desiredDirection.y = 0f;
-        desiredDirection.Normalize();
-
-        // Lerp current về desired → xoay mượt mà
-        currentDirection = Vector3.Lerp(currentDirection, desiredDirection, turnSpeed * time);
-        currentDirection.Normalize();
-
-        // Áp dụng velocity
-        Vector3 targetVelocity = currentDirection * moveSpeed;
-        rb.velocity = new Vector3(targetVelocity.x, 0f, targetVelocity.z);
-
-        // Xoay model vi khuẩn theo hướng di chuyển (mượt bằng Slerp)
-        if (rb.velocity.sqrMagnitude > 0.01f) {
-            Quaternion targetRotation = Quaternion.LookRotation(rb.velocity.normalized, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * time * 1.5f);
+        if (arrivedAtWaypoint || waypointExpired) {
+            currentWaypoint = GetRandomWaypoint();
+            waypointTimer = 0f;
         }
+
+        MoveTowardWaypoint();
+    }
+
+    private void MoveTowardWaypoint() {
+        Vector3 direction = (currentWaypoint - transform.position).normalized;
+        direction.y = 0f;
+
+        // Xoay mượt về hướng waypoint
+        if (direction != Vector3.zero) {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        }
+
+        // Di chuyển thẳng về phía trước
+        transform.position += transform.forward * moveSpeed * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, 0f, transform.position.z); // lock Y
+    }
+
+    private Vector3 GetRandomWaypoint() {
+        // Random góc trong phạm vi ±60 độ trước mặt (tổng 120 độ)
+        float halfAngle = waypointAngle * 0.5f;
+        float randomAngle = UnityEngine.Random.Range(-halfAngle, halfAngle);
+
+        // Xoay hướng hiện tại theo góc random
+        Quaternion rotation = Quaternion.Euler(0f, randomAngle, 0f);
+        Vector3 randomDirection = rotation * transform.forward;
+
+        // Waypoint = vị trí hiện tại + hướng random * bán kính random
+        float randomRadius = UnityEngine.Random.Range(waypointRadius * 0.5f, waypointRadius);
+        return transform.position + randomDirection * randomRadius;
     }
 
     protected void HanleMultiplication() {

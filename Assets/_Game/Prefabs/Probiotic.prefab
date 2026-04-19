@@ -77,9 +77,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5410761258766113943}
   - component: {fileID: 7497622852618360654}
-  - component: {fileID: 6544981826183760418}
   - component: {fileID: 4959507700996922185}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Probiotic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,34 +116,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
---- !u!54 &6544981826183760418
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5081462570057317254}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 0
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!65 &4959507700996922185
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -233,6 +208,42 @@ PrefabInstance:
     - target: {fileID: 185213693752183430, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
       propertyPath: m_Name
       value: ProbioticVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213693752183430, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213693815798576, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213694112182564, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213695022370815, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213695066213151, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213695390357493, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213695418813813, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213695494820974, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 185213695603739749, guid: 44e4aebafd329fd459d7b74f143817c0, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

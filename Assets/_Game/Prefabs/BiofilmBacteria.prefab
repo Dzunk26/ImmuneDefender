@@ -77,9 +77,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6089855353940629317}
   - component: {fileID: 8103555331957944584}
-  - component: {fileID: 1999909037322070254}
   - component: {fileID: 6128616773812184270}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BiofilmBacteria
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,34 +116,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
---- !u!54 &1999909037322070254
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6358864846698659459}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 4
-  m_CollisionDetection: 0
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!65 &6128616773812184270
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -174,9 +149,53 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6089855353940629317}
     m_Modifications:
+    - target: {fileID: 3475025206494854989, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025206498219851, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025207020326020, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025207104614525, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025207212203674, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025207330104780, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025207578258432, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025207668377274, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025207895330333, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025208235795038, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3475025208398641768, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
       propertyPath: m_Name
       value: BiofilmBacteriaVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 3475025208398641768, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3475025208398641771, guid: 2039b8f06eb54fd4f9b60afdbfdd273f, type: 3}
       propertyPath: m_LocalScale.x

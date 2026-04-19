@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraPlayer : MonoBehaviour, IAttackerStat {
+    private const string BACTERIA_LAYER = "Bacteria";
+
     public int Damage => lazeDamage;
     public int Accuracy => accuracy;
 
@@ -11,10 +13,12 @@ public class CameraPlayer : MonoBehaviour, IAttackerStat {
     private float moveSpeed = 7f;
     private int lazeDamage = 1;
     private int accuracy = 100;
+    private LayerMask bacteriaLayer;
 
 
     private void Start() {
         gameInput.OnInteractAction += GameInput_OnInteractAction;
+        bacteriaLayer = LayerMask.GetMask(BACTERIA_LAYER);
     }
 
     private void GameInput_OnInteractAction(object sender, System.EventArgs e) {
@@ -32,9 +36,12 @@ public class CameraPlayer : MonoBehaviour, IAttackerStat {
     }
 
     private void HandleInteract() {
+        Debug.Log("Interact");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity)) {
-            if (hit.transform.TryGetComponent(out BaseBacteria bacteria)) {
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, bacteriaLayer)) {
+            Debug.Log("Start raycast");
+            if (hit.collider.TryGetComponent(out BaseBacteria bacteria)) {
+                Debug.Log("bacteria take damage");  
                 bacteria.TakeDamage(this);
             }
         }

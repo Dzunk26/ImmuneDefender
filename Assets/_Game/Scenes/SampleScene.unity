@@ -482,54 +482,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
---- !u!1 &337034833 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6718805278452739712, guid: a479f0db7fc24d34bb36a7b180649ae3, type: 3}
-  m_PrefabInstance: {fileID: 1893865196}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &337034836
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 337034833}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 4
-  m_CollisionDetection: 0
---- !u!114 &337034838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 337034833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a791db620f60694c9c723faeff9846a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 0.5
-  turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1 &383055823 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5934776421949543026, guid: df793167a12b5324b8a0c9ec9bc5b2dc, type: 3}
@@ -576,7 +532,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &391660494
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -680,7 +639,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &423384312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -807,7 +769,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1 &471817381 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3727587224517649352, guid: 0e53d8e02522f57469b25c5723196b9a, type: 3}
@@ -854,7 +819,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &481897346
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -980,7 +948,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &499647323
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1168,7 +1139,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1 &668552457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1364,7 +1338,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1 &846311943 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 185213693752183430, guid: 9ca2a01460a88924f89ac608591a47f4, type: 3}
@@ -1411,7 +1388,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &855107536
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1626,6 +1606,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1720,6 +1701,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameInput: {fileID: 960829070}
+--- !u!114 &963194230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1001 &981068898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2016,7 +2041,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &1449538063
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2279,7 +2307,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1 &1526338000
 GameObject:
   m_ObjectHideFlags: 0
@@ -2476,7 +2507,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6089855353940629317, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4
+      value: -3.57
       objectReference: {fileID: 0}
     - target: {fileID: 6089855353940629317, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2484,7 +2515,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6089855353940629317, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.75
+      value: -5.22
       objectReference: {fileID: 0}
     - target: {fileID: 6089855353940629317, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2716,7 +2747,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1 &1638184757
 GameObject:
   m_ObjectHideFlags: 0
@@ -2819,7 +2853,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &1653328804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2964,10 +3001,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1999909037322070254, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
-      propertyPath: m_Constraints
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 6089855353940629317, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5
@@ -3195,16 +3228,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6718805279251039156, guid: a479f0db7fc24d34bb36a7b180649ae3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6718805278452739712, guid: a479f0db7fc24d34bb36a7b180649ae3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 337034836}
-    - targetCorrespondingSourceObject: {fileID: 6718805278452739712, guid: a479f0db7fc24d34bb36a7b180649ae3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 337034838}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a479f0db7fc24d34bb36a7b180649ae3, type: 3}
 --- !u!1 &2015471732 stripped
 GameObject:
@@ -3252,7 +3280,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   turnSpeed: 0.2
-  wanderStrength: 0.2
+  waypointDistance: 0.1
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointTimerMax: 3
 --- !u!1001 &1309839552589634198
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3320,7 +3351,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2609187491726139360, guid: 9d58aa7b722d2aa4585fab6823d9c7fc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.2206848
+      value: -5.720685
       objectReference: {fileID: 0}
     - target: {fileID: 2609187491726139360, guid: 9d58aa7b722d2aa4585fab6823d9c7fc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3328,7 +3359,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2609187491726139360, guid: 9d58aa7b722d2aa4585fab6823d9c7fc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.845585
+      value: 0.42
       objectReference: {fileID: 0}
     - target: {fileID: 2609187491726139360, guid: 9d58aa7b722d2aa4585fab6823d9c7fc, type: 3}
       propertyPath: m_LocalRotation.w
