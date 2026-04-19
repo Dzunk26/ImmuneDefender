@@ -19,9 +19,14 @@ public class BacteriaSight : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.TryGetComponent(out BaseBacteria bacteria) && bacteria != owner) {
             if (CheckEdible(bacteria)) {
+                if (bacteria is IUntargetable untargetable) {
+                    untargetable.OnBecameUntargetable += Untargetable_OnBecameUntargetable;
+                    untargetable.OnBecameTargetable += Untargetable_OnBecameTargetable;
+                }
                 listEdibleBacteriaInRange.Add(bacteria);
                 bacteria.OnDeath += Bacteria_OnDeath;
                 UpdatePreyState();
+                   
             }
             else if (CheckInedible(bacteria)) {
                 listInedibleBacteriaInRange.Add(bacteria);
@@ -37,6 +42,7 @@ public class BacteriaSight : MonoBehaviour {
         }
     }
 
+
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.TryGetComponent(out BaseBacteria bacteria)) {
             bacteria.OnDeath -= Bacteria_OnDeath;
@@ -51,6 +57,14 @@ public class BacteriaSight : MonoBehaviour {
             listMacrophageInRange.Remove(macrophage);
             UpdateDangerState();
         }
+    }
+
+    private void Untargetable_OnBecameTargetable(object sender, EventArgs e) {
+        
+    }
+
+    private void Untargetable_OnBecameUntargetable(object sender, EventArgs e) {
+        
     }
 
     private void Bacteria_OnDeath(object sender, EventArgs e) {
@@ -71,7 +85,7 @@ public class BacteriaSight : MonoBehaviour {
             isInDanger = true;
             OnDangerDetected?.Invoke(this, EventArgs.Empty);
         }
-        else {
+        else if (!danger && isInDanger){
             isInDanger = false;
         }
     }
@@ -83,7 +97,7 @@ public class BacteriaSight : MonoBehaviour {
             hasPrey = true;
             OnPreyDetected?.Invoke(this, EventArgs.Empty);
         }
-        else {
+        else if (!prey && hasPrey) {
             hasPrey = false;
         }
     }

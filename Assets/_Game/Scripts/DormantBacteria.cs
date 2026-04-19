@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 //vi khuan co the ngu dong de ne he mien dich tan cong
-public class DormantBacteria : BaseBacteria {
+public class DormantBacteria : BaseBacteria, IUntargetable {
+    public event EventHandler OnBecameUntargetable;
+    public event EventHandler OnBecameTargetable;
+
     [SerializeField] private BacteriaSight bacteriaSight;
     [SerializeField] private Collider bodyCollider;
 
@@ -12,7 +16,7 @@ public class DormantBacteria : BaseBacteria {
     private float dormancyChance = 0.5f;
     private bool isDormant = false;
 
-    private void Start() {
+    private void OnEnable() {
         bacteriaSight.OnDangerDetected += BacteriaSight_OnDangerDetected;
     }
 
@@ -40,7 +44,7 @@ public class DormantBacteria : BaseBacteria {
     private void TryEnterDormancy() {
         if (isDormant) return;
 
-        if (Random.value < dormancyChance) {
+        if (UnityEngine.Random.value < dormancyChance) {
             EnterDormancy();
         }
     }
@@ -51,11 +55,17 @@ public class DormantBacteria : BaseBacteria {
         isDormant = true;
         dormancyTimer = 0f;
         bodyCollider.enabled = false;
+        OnBecameUntargetable.Invoke(this, EventArgs.Empty);
     }
 
     //vi khuan hoat dong tro lai
     private void Resuscitate() {
         isDormant = false;
         bodyCollider.enabled = true;
+        OnBecameTargetable?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnDisable() {
+        bacteriaSight.OnDangerDetected -= BacteriaSight_OnDangerDetected;
     }
 }

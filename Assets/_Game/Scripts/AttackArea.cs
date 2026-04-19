@@ -18,7 +18,6 @@ public class AttackArea : MonoBehaviour, IAttackerStat {
     }
 
     private void Phagocytosis(BaseBacteria bacteria) {
-        macrophageSight.RemoveDeadBacteria(bacteria);
         bacteria.TakeDamage(this);
     }
 }
