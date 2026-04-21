@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6489790366967332715}
   - component: {fileID: 4498569442804956758}
-  - component: {fileID: 4321168820715416983}
   - component: {fileID: 5098107587161624722}
+  - component: {fileID: -4260712680846338349}
   m_Layer: 0
   m_Name: Macrophage
   m_TagString: Untagged
@@ -50,8 +50,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   macrophageSight: {fileID: 6854464202051196983}
-  rb: {fileID: 4321168820715416983}
---- !u!54 &4321168820715416983
+  moveSpeed: 0.5
+  chaseSpeed: 1
+  turnSpeed: 3
+  waypointRadius: 2
+  waypointAngle: 120
+  waypointDistance: 0.1
+  waypointTimerMax: 3
+--- !u!135 &5098107587161624722
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2542708328174074786}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &-4260712680846338349
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,32 +100,11 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &5098107587161624722
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2542708328174074786}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5968430978374177775
 GameObject:
   m_ObjectHideFlags: 0

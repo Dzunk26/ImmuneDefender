@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MacrophageSight : MonoBehaviour
 {
+    public event EventHandler OnBacteriaListChange;
+
     private List<BaseBacteria> listBacteriaInRange = new List<BaseBacteria>();
     private List<BaseBacteria> listTargetableBacteriaInRange = new List<BaseBacteria>();
 
@@ -18,6 +21,9 @@ public class MacrophageSight : MonoBehaviour
 
             listBacteriaInRange.Add(bacteria);
             listTargetableBacteriaInRange.Add(bacteria);
+
+            OnBacteriaListChange?.Invoke(this, EventArgs.Empty);
+            Debug.Log(other.gameObject);
         }
     }
 
@@ -33,6 +39,7 @@ public class MacrophageSight : MonoBehaviour
 
         if (listBacteriaInRange.Contains(bacteria)) {
             listTargetableBacteriaInRange.Add(bacteria);
+            OnBacteriaListChange?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -40,6 +47,7 @@ public class MacrophageSight : MonoBehaviour
         BaseBacteria bacteria = sender as BaseBacteria;
 
         listTargetableBacteriaInRange.Remove(bacteria);
+        OnBacteriaListChange?.Invoke(this, EventArgs.Empty);
     }
 
     private void Bacteria_OnDeath(object sender, System.EventArgs e) {
@@ -58,6 +66,8 @@ public class MacrophageSight : MonoBehaviour
 
         listBacteriaInRange.Remove(bacteria);
         listTargetableBacteriaInRange.Remove(bacteria);
+
+        OnBacteriaListChange?.Invoke(this, EventArgs.Empty);
     }
 
     public BaseBacteria GetClosestBacteria(Vector3 fromPosition) {

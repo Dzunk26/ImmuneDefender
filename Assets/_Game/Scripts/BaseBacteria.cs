@@ -89,6 +89,7 @@ public class BaseBacteria : MonoBehaviour {
 
         // Waypoint = vị trí hiện tại + hướng random * bán kính random
         float randomRadius = UnityEngine.Random.Range(waypointRadius * 0.5f, waypointRadius);
+
         return transform.position + randomDirection * randomRadius;
     }
 
