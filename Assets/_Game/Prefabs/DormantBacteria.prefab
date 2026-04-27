@@ -78,7 +78,8 @@ GameObject:
   - component: {fileID: 2609187491726139360}
   - component: {fileID: 4901353509292892943}
   - component: {fileID: 8472822376813468329}
-  m_Layer: 3
+  - component: {fileID: 3071874444887884958}
+  m_Layer: 6
   m_Name: DormantBacteria
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,12 +138,39 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.66433764, y: 1, z: 2.0015507}
   m_Center: {x: -0.03406191, y: 0, z: -0.031224847}
+--- !u!54 &3071874444887884958
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7288996950390742510}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &5237567205639044422
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -193,7 +221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3475025208398641768, guid: 75c6d491c7ea89c4abd8a04ded80d6d7, type: 3}
       propertyPath: m_Name
-      value: Virus 2 (2) 4
+      value: DormantBacteriaVisual
       objectReference: {fileID: 0}
     - target: {fileID: 3475025208398641768, guid: 75c6d491c7ea89c4abd8a04ded80d6d7, type: 3}
       propertyPath: m_Layer

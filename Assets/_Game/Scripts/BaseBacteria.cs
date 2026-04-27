@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseBacteria : MonoBehaviour {
+public class BaseBacteria : MonoBehaviour, IDamageable {
     public event EventHandler OnDeath;
 
     [Header("Movement Settings")]
@@ -16,21 +16,22 @@ public class BaseBacteria : MonoBehaviour {
     [SerializeField] private float waypointAngle = 120f;     // góc trước mặt để random
     [SerializeField] private float waypointTimerMax = 3f;    // thời gian tối đa trước khi random lại
     private int hp = 1;
-    protected int trophicLevel = 0; //thu bac trong chuoi thuc an
+    protected int trophicLevel = 0; // thu bac trong chuoi thuc an
 
     private float multiplicationTimer;
     private float multiplicationTimerMax = 10f;
 
-    protected Rigidbody rb;
     private Vector3 currentWaypoint;
     private float waypointTimer;
 
-    public virtual void TakeDamage(IAttackerStat attackerStat) {
-        hp -= attackerStat.Damage;
+    public virtual void Damage(IAttackerStat attacker) {
+        hp -= attacker.Damage;
         if (hp <= 0) {
             Die();
         }
     }
+
+    public virtual bool IsHostile() => true; // danh dau vi khuan co hai hay khong
 
     public virtual void Die() {
         OnDeath?.Invoke(this, EventArgs.Empty);
@@ -42,9 +43,6 @@ public class BaseBacteria : MonoBehaviour {
     public virtual void Eaten() { }
 
     private void Start() {
-        rb = GetComponent<Rigidbody>();
-        //rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
         currentWaypoint = GetRandomWaypoint();
     }
 

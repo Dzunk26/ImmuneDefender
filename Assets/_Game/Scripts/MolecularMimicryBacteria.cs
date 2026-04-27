@@ -4,5 +4,11 @@ using UnityEngine;
 
 //vi khuan co the bat chuoc loi khuan de ne he mien dich tan cong
 public class MolecularMimicryBacteria : BaseBacteria {
-    
+    private bool isExposed = false;
+
+    public override bool IsHostile() => isExposed;
+
+    public void Exposed() {
+        isExposed = true;
+    }
 }

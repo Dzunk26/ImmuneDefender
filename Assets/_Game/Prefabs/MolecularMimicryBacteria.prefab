@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 1887334533405871937}
   - component: {fileID: 1464125725182949246}
   - component: {fileID: 2595823331321583080}
-  m_Layer: 3
+  - component: {fileID: 3723030306800058797}
+  m_Layer: 6
   m_Name: MolecularMimicryBacteria
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,12 +69,39 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.66948265, y: 1, z: 2.569811}
   m_Center: {x: -0.00073233247, y: 0, z: -0.006357789}
+--- !u!54 &3723030306800058797
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884674760167819322}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6519703000202257030
 GameObject:
   m_ObjectHideFlags: 0

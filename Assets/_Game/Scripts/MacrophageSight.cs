@@ -12,11 +12,13 @@ public class MacrophageSight : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (other.TryGetComponent<BaseBacteria>(out BaseBacteria bacteria)) {
+            if (!bacteria.IsHostile()) return; // bacteria is helpful, not attack
+
             bacteria.OnDeath += Bacteria_OnDeath;
 
             if (bacteria is IUntargetable untargetable) {
-                untargetable.OnBecameUntargetable += Untargetable_OnBecameUntargetable;
-                untargetable.OnBecameTargetable += Untargetable_OnBecameTargetable;
+                untargetable.OnBecameUntargetable += IUntargetable_OnBecameUntargetable;
+                untargetable.OnBecameTargetable += IUntargetable_OnBecameTargetable;
             }
 
             listBacteriaInRange.Add(bacteria);
@@ -34,7 +36,7 @@ public class MacrophageSight : MonoBehaviour
         }
     }
 
-    private void Untargetable_OnBecameTargetable(object sender, System.EventArgs e) {
+    private void IUntargetable_OnBecameTargetable(object sender, System.EventArgs e) {
         BaseBacteria bacteria = sender as BaseBacteria;
 
         if (listBacteriaInRange.Contains(bacteria)) {
@@ -43,7 +45,7 @@ public class MacrophageSight : MonoBehaviour
         }
     }
 
-    private void Untargetable_OnBecameUntargetable(object sender, System.EventArgs e) {
+    private void IUntargetable_OnBecameUntargetable(object sender, System.EventArgs e) {
         BaseBacteria bacteria = sender as BaseBacteria;
 
         listTargetableBacteriaInRange.Remove(bacteria);
@@ -60,8 +62,8 @@ public class MacrophageSight : MonoBehaviour
         bacteria.OnDeath -= Bacteria_OnDeath;
 
         if (bacteria is IUntargetable untargetable) {
-            untargetable.OnBecameUntargetable -= Untargetable_OnBecameTargetable;
-            untargetable.OnBecameTargetable -= Untargetable_OnBecameUntargetable;
+            untargetable.OnBecameUntargetable -= IUntargetable_OnBecameTargetable;
+            untargetable.OnBecameTargetable -= IUntargetable_OnBecameUntargetable;
         }
 
         listBacteriaInRange.Remove(bacteria);

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //dai thuc bao
-public class Macrophage : MonoBehaviour {
+public class Macrophage : MonoBehaviour, IDamageable {
+    public event EventHandler OnDeath;
+
     [Header("Movement")]
     [SerializeField] private MacrophageSight macrophageSight;
     [SerializeField] private float moveSpeed = 0.5f;
@@ -25,6 +27,13 @@ public class Macrophage : MonoBehaviour {
     private float waypointTimer;
     private float updateTargetTimer;
     private float updateTargetTimerMax = 1f;
+    private bool isInfected = false;
+
+    public void Damage(IAttackerStat attacker) {
+        if (!isInfected) return;
+
+        Die();
+    }
 
     private void Start() {
         macrophageSight.OnBacteriaListChange += MacrophageSight_OnBacteriaListChange;
@@ -37,8 +46,12 @@ public class Macrophage : MonoBehaviour {
         UpdateTarget();
 
         switch (state) {
-            case State.Wander: HandleWander(); break;
-            case State.Chase: HandleChase(); break;
+            case 
+                State.Wander: HandleWander(); 
+                break;
+            case 
+                State.Chase: HandleChase(); 
+                break;
         }
     }
 
@@ -106,4 +119,14 @@ public class Macrophage : MonoBehaviour {
 
         return transform.position + randomDirection * randomRadius;
     }
+
+    public void Die() {
+        OnDeath?.Invoke(this, EventArgs.Empty);
+        Destroy(gameObject);
+    }
+
+    public void SetInfected(bool infected) {
+        isInfected = infected;
+    }
+
 }

@@ -34,7 +34,7 @@ public class BiofilmBacteria : BaseBacteria, IBiofilmable
         }
     }
 
-    public override void TakeDamage(IAttackerStat attackerStat) {
+    public override void Damage(IAttackerStat attackerStat) {
         int damage = attackerStat.Damage;
 
         if (curentShieldAmount > 0) {
@@ -48,7 +48,7 @@ public class BiofilmBacteria : BaseBacteria, IBiofilmable
         }
 
         if (damage > 0) {
-            base.TakeDamage(attackerStat);
+            base.Damage(attackerStat);
         }
     }
 

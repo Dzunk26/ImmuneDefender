@@ -24,12 +24,12 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
         }
     }
 
-    public override void TakeDamage(IAttackerStat attackerStat) {
+    public override void Damage(IAttackerStat attackerStat) {
         if (TryDodge(attackerStat.Accuracy)) {
             OnDodgeSuccess();
         }
         else {
-            base.TakeDamage(attackerStat);
+            base.Damage(attackerStat);
         }
     }
 

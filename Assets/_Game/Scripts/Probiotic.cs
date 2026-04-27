@@ -5,4 +5,6 @@ using UnityEngine;
 //loi khuan
 public class Probiotic : BaseBacteria {
 
+    public override bool IsHostile() => false;
+
 }
