@@ -13,8 +13,9 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
     private float slideTimer;
     private Vector3 slideDirection;
 
-    private void Update() {
-        HanleMultiplication();
+    protected override void HandleUpdate() {
+        HandleMultiplication(poolTag);
+        SelfDestruct();
 
         if (isSliding) {
             HandleSlide();

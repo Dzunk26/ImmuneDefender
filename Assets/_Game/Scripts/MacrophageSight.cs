@@ -25,7 +25,6 @@ public class MacrophageSight : MonoBehaviour
             listTargetableBacteriaInRange.Add(bacteria);
 
             OnBacteriaListChange?.Invoke(this, EventArgs.Empty);
-            Debug.Log(other.gameObject);
         }
     }
 

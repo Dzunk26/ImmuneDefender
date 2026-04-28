@@ -1227,11 +1227,35 @@ MonoBehaviour:
   pools:
   - tag: BiofilmBacteria
     prefab: {fileID: 6358864846698659459, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
-    size: 8000
+    size: 100
+    parent: {fileID: 668552458}
+  - tag: DormantBacteria
+    prefab: {fileID: 7288996950390742510, guid: 9d58aa7b722d2aa4585fab6823d9c7fc, type: 3}
+    size: 100
+    parent: {fileID: 668552458}
+  - tag: ExternalFlagellaBacteria
+    prefab: {fileID: 8491824370727096758, guid: 566a42ede760e994b965bb9d683ff117, type: 3}
+    size: 100
+    parent: {fileID: 668552458}
+  - tag: IntracellularBacteria
+    prefab: {fileID: 2821592727258521205, guid: 1c969700594875e4b8d05b70c1b8d197, type: 3}
+    size: 100
+    parent: {fileID: 668552458}
+  - tag: MolecularMimicryBacteria
+    prefab: {fileID: 1884674760167819322, guid: b308aacd6861ab242acc4856d1bea5a8, type: 3}
+    size: 100
+    parent: {fileID: 668552458}
+  - tag: NormalBacteria
+    prefab: {fileID: 7087477032060458639, guid: 22b6e1469fb4c5645bf4fd7b0b22a291, type: 3}
+    size: 100
+    parent: {fileID: 668552458}
+  - tag: Probiotic
+    prefab: {fileID: 5081462570057317254, guid: 66cdeba3fe94c5b418b69164ae871a58, type: 3}
+    size: 100
     parent: {fileID: 668552458}
   - tag: Macrophage
     prefab: {fileID: 2542708328174074786, guid: 16508adb9bfb1d645a86ed70fde0229a, type: 3}
-    size: 8000
+    size: 100
     parent: {fileID: 83691487}
 --- !u!4 &1638184759
 Transform:

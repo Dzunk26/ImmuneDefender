@@ -121,6 +121,9 @@ MonoBehaviour:
   waypointRadius: 2
   waypointAngle: 120
   waypointTimerMax: 3
+  aliveTimerMax: 20
+  multiplicationTimerMax: 10
+  poolTag: BiofilmBacteria
 --- !u!65 &6128616773812184270
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -121,6 +121,9 @@ MonoBehaviour:
   waypointRadius: 2
   waypointAngle: 120
   waypointTimerMax: 3
+  aliveTimerMax: 20
+  multiplicationTimerMax: 10
+  poolTag: ExternalFlagellaBacteria
 --- !u!65 &5562448788554040032
 BoxCollider:
   m_ObjectHideFlags: 0

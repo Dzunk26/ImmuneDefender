@@ -54,6 +54,9 @@ MonoBehaviour:
   waypointRadius: 2
   waypointAngle: 120
   waypointTimerMax: 3
+  aliveTimerMax: 20
+  multiplicationTimerMax: 10
+  poolTag: MolecularMimicryBacteria
 --- !u!65 &2595823331321583080
 BoxCollider:
   m_ObjectHideFlags: 0

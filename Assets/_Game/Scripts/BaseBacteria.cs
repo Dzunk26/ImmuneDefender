@@ -15,11 +15,17 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
     [SerializeField] private float waypointRadius = 2f;      // bán kính random waypoint
     [SerializeField] private float waypointAngle = 120f;     // góc trước mặt để random
     [SerializeField] private float waypointTimerMax = 3f;    // thời gian tối đa trước khi random lại
-    private int hp = 1;
+
+    [SerializeField] private float aliveTimerMax = 20;
+    [SerializeField] private float multiplicationTimerMax = 7f;
+
+    [SerializeField] protected string poolTag;
     protected int trophicLevel = 0; // thu bac trong chuoi thuc an
 
+    private float aliveTimer;
     private float multiplicationTimer;
-    private float multiplicationTimerMax = 10f;
+    
+    private int hp = 1;
 
     private Vector3 currentWaypoint;
     private float waypointTimer;
@@ -35,6 +41,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
 
     public virtual void Die() {
         OnDeath?.Invoke(this, EventArgs.Empty);
+        // thu vao pool
         Destroy(gameObject);
     }
 
@@ -44,6 +51,16 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
 
     private void Start() {
         currentWaypoint = GetRandomWaypoint();
+    }
+
+    private void Update() {
+        HandleUpdate();
+    }
+
+    protected virtual void HandleUpdate() {
+        HandleMovevement();
+        HandleMultiplication(poolTag);
+        SelfDestruct();
     }
 
     protected void HandleMovevement() {
@@ -59,6 +76,30 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         }
 
         MoveTowardWaypoint();
+    }
+
+    protected void HandleMultiplication(string poolTag) {
+        multiplicationTimer += Time.deltaTime;
+
+        if (multiplicationTimer > multiplicationTimerMax) {
+            GameObject newBacteria = ObjectPooler.Instance.GetFromPool(poolTag);
+            if (newBacteria == null) return;
+
+            //float randomAngle = UnityEngine.Random.Range(120f, 240f);
+            //float childAngle = transform.eulerAngles.y + randomAngle;
+
+            newBacteria.transform.position = transform.position;
+            newBacteria.transform.rotation = transform.rotation;
+
+            multiplicationTimer = 0f; // reset timer
+        }
+    }
+
+    protected void SelfDestruct() {
+        aliveTimer += Time.deltaTime;
+        if (aliveTimer > aliveTimerMax) {
+            Die();
+        }
     }
 
     private void MoveTowardWaypoint() {
@@ -91,13 +132,6 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         return transform.position + randomDirection * randomRadius;
     }
 
-    protected void HanleMultiplication() {
-        multiplicationTimer += Time.deltaTime;
-
-        if (multiplicationTimer > multiplicationTimerMax) {
-            // nhân đôi
-        }
-    }
 
     public int GetTrophicLevel() {
         return trophicLevel;

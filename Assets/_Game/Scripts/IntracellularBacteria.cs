@@ -4,11 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //vi khuan co the song ky sinh trong dai thuc bao
-public class IntracellularBacteria : BaseBacteria {
+public class IntracellularBacteria : BaseBacteria, IUntargetable {
+    public event EventHandler OnBecameUntargetable;
+    public event EventHandler OnBecameTargetable;
+
     [SerializeField] private GameObject visual;
     [SerializeField] private Collider bodyCollider;
 
     private Macrophage currentHost;
+
+
     private bool isParasiting => currentHost != null;
 
     private void OnTriggerEnter(Collider other) {
@@ -26,6 +31,7 @@ public class IntracellularBacteria : BaseBacteria {
         transform.localPosition = Vector3.zero;
         visual.SetActive(false);
         bodyCollider.enabled = false;
+        OnBecameUntargetable?.Invoke(this, EventArgs.Empty);
     }
 
     private void Host_OnDeath(object sender, EventArgs e) {
@@ -40,5 +46,6 @@ public class IntracellularBacteria : BaseBacteria {
         visual.SetActive(true);
         bodyCollider.enabled = true;
         currentHost = null;
+        OnBecameTargetable?.Invoke(this, EventArgs.Empty);
     }
 }

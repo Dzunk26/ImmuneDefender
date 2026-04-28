@@ -121,6 +121,9 @@ MonoBehaviour:
   waypointRadius: 2
   waypointAngle: 120
   waypointTimerMax: 3
+  aliveTimerMax: 20
+  multiplicationTimerMax: 10
+  poolTag: Probiotic
 --- !u!65 &4959507700996922185
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -15,13 +15,12 @@ public class BiofilmBacteria : BaseBacteria, IBiofilmable
     private float recoverShieldTimerMax = 4f;
     private bool isBreak = false;
 
-    private void Update() {
-        HanleMultiplication();
-        HandleMovevement();
+    protected override void HandleUpdate() {
         HandleRecoverShield();
+        base.HandleUpdate();
     }
 
-    private  void HandleRecoverShield() {
+    private void HandleRecoverShield() {
         if (isBreak) {
             recoverShieldTimer += Time.deltaTime;
             if (recoverShieldTimer >= recoverShieldTimerMax) {

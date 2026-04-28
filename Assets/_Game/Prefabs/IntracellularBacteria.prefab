@@ -121,6 +121,9 @@ MonoBehaviour:
   waypointRadius: 2
   waypointAngle: 120
   waypointTimerMax: 3
+  aliveTimerMax: 20
+  multiplicationTimerMax: 10
+  poolTag: IntracellularBacteria
   visual: {fileID: 5817150144169144132}
   bodyCollider: {fileID: 325654518395452031}
 --- !u!65 &325654518395452031

@@ -121,6 +121,9 @@ MonoBehaviour:
   waypointRadius: 2
   waypointAngle: 120
   waypointTimerMax: 3
+  aliveTimerMax: 20
+  multiplicationTimerMax: 10
+  poolTag: DormantBacteria
   bacteriaSight: {fileID: 6943418614046598868}
   bodyCollider: {fileID: 8472822376813468329}
 --- !u!65 &8472822376813468329

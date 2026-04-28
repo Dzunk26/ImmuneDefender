@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 
 public class ObjectPooler : MonoBehaviour {
+
     [Serializable]
     public class Pool {
         public string tag;
@@ -13,9 +14,13 @@ public class ObjectPooler : MonoBehaviour {
         public Transform parent;
     }
 
-    public static ObjectPooler Instance { get; set; }
+    public static ObjectPooler Instance { get; private set; }
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
+
+    private void Awake() {
+        Instance = this;
+    }
 
     private void Start() {
         OnInitializePool();

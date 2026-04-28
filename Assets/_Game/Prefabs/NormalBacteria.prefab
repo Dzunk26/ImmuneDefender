@@ -54,6 +54,9 @@ MonoBehaviour:
   waypointRadius: 2
   waypointAngle: 120
   waypointTimerMax: 3
+  aliveTimerMax: 20
+  multiplicationTimerMax: 10
+  poolTag: NormalBacteria
 --- !u!65 &946254682459763128
 BoxCollider:
   m_ObjectHideFlags: 0

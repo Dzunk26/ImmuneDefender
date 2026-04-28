@@ -24,13 +24,12 @@ public class DormantBacteria : BaseBacteria, IUntargetable {
         TryEnterDormancy();
     }
 
-    private void Update() {
+    protected override void HandleUpdate() {
         if (isDormant) {
             HandleDormancy();
         }
         else {
-            HanleMultiplication();
-            HandleMovevement();
+            base.HandleUpdate();
         }
     }
 
