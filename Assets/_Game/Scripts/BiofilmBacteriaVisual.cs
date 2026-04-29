@@ -9,7 +9,7 @@ public class BiofilmBacteriaVisual : MonoBehaviour {
     private void Start() {
         biofilmBacteria.OnBreakShield += BiofilmBacteria_OnBreakShield;
         biofilmBacteria.OnRecoverShield += BiofilmBacteria_OnRecoverShield;
-        Show();
+        Hide();
     }
 
     private void BiofilmBacteria_OnRecoverShield(object sender, System.EventArgs e) {

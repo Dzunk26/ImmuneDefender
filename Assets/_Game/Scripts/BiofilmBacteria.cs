@@ -9,11 +9,19 @@ public class BiofilmBacteria : BaseBacteria, IBiofilmable
     public event EventHandler OnBreakShield;
     public event EventHandler OnRecoverShield;
 
+    [SerializeField] private float recoverShieldTimerMaxDefault = 4f;
+
     private int shieldAmount = 1;
     private int curentShieldAmount = 1;
-    private float recoverShieldTimer;
-    private float recoverShieldTimerMax = 4f;
-    private bool isBreak = false;
+    private float recoverShieldTimer = 0f;
+    private float recoverShieldTimerMax;
+    private bool isBreak = true;
+
+    public override void OnInit() {
+        recoverShieldTimerMax = UnityEngine.Random.Range(recoverShieldTimerMaxDefault - 0.5f, recoverShieldTimerMaxDefault + 0.5f);
+        recoverShieldTimer = UnityEngine.Random.Range(0, recoverShieldTimerMax * 0.5f);
+        base.OnInit();
+    }
 
     protected override void HandleUpdate() {
         HandleRecoverShield();

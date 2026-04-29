@@ -13,7 +13,6 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
 
     private Macrophage currentHost;
 
-
     private bool isParasiting => currentHost != null;
 
     private void OnTriggerEnter(Collider other) {
@@ -23,12 +22,23 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
         }
     }
 
+    protected override void HandleUpdate() {
+        HandleMultiplication(poolTag);
+        SelfDestruct();
+
+        if (!isParasiting) {
+            HandleMovevement();
+        }
+    }
+
     public void EnterHost(Macrophage host) {
         currentHost = host;
         currentHost.OnDeath += Host_OnDeath;
         currentHost.SetInfected(true);
+
         transform.SetParent(host.transform);
         transform.localPosition = Vector3.zero;
+
         visual.SetActive(false);
         bodyCollider.enabled = false;
         OnBecameUntargetable?.Invoke(this, EventArgs.Empty);
@@ -42,7 +52,9 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
     private void ExitHost() {
         currentHost.OnDeath -= Host_OnDeath;
         currentHost.SetInfected(false);
+
         transform.SetParent(null);
+
         visual.SetActive(true);
         bodyCollider.enabled = true;
         currentHost = null;

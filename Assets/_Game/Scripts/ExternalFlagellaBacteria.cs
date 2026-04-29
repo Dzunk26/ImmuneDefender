@@ -26,7 +26,7 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
     }
 
     public override void Damage(IAttackerStat attackerStat) {
-        if (TryDodge(attackerStat.Accuracy)) {
+        if (!isSliding && TryDodge(attackerStat.Accuracy)) {
             OnDodgeSuccess();
         }
         else {
@@ -45,14 +45,26 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
         isSliding = true;
         slideTimer = 0;
         slideDirection = transform.forward;
-        Debug.Log("Dodge");
     }
 
     private void HandleSlide() {
         slideTimer += Time.deltaTime;
 
-        // Tự move theo slideDirection thay vì dùng velocity
-        float speedThisFrame = Mathf.Lerp(slideSpeed, 0f, slideTimer / slideTimerMax); // giảm dần
+        float speedThisFrame = Mathf.Lerp(slideSpeed, 0f, slideTimer / slideTimerMax); 
+        Vector3 movement = slideDirection * speedThisFrame * Time.deltaTime;
+
+        if (Physics.Raycast(transform.position, slideDirection, out RaycastHit hit, movement.magnitude)) {
+            if (hit.collider.TryGetComponent(out AttackArea attackArea)) {
+                Debug.Log("enter attack area");
+                Debug.Log(attackArea.CheckAttackState());
+                if (attackArea.CheckAttackState()) {
+                    attackArea.Phagocytosis(this);
+                    isSliding = false;
+                    return;
+                }
+            }
+        }
+
         transform.position += slideDirection * speedThisFrame * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, 0f, transform.position.z); // lock Y
 

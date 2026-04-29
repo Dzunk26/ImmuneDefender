@@ -95,7 +95,7 @@ Transform:
   m_GameObject: {fileID: 7288996950390742510}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.2206848, y: 0, z: -0.845585}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -124,6 +124,7 @@ MonoBehaviour:
   aliveTimerMax: 20
   multiplicationTimerMax: 10
   poolTag: DormantBacteria
+  trophicLevel: 0
   bacteriaSight: {fileID: 6943418614046598868}
   bodyCollider: {fileID: 8472822376813468329}
 --- !u!65 &8472822376813468329

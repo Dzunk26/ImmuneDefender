@@ -60,7 +60,6 @@ public class Macrophage : MonoBehaviour, IDamageable {
         if (updateTargetTimer > updateTargetTimerMax) {
             updateTargetTimer = 0;
             RefreshTarget();
-            Debug.Log(currentTarget.gameObject);
         }
     }
 

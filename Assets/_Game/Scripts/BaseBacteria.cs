@@ -16,19 +16,29 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
     [SerializeField] private float waypointAngle = 120f;     // góc trước mặt để random
     [SerializeField] private float waypointTimerMax = 3f;    // thời gian tối đa trước khi random lại
 
-    [SerializeField] private float aliveTimerMax = 20;
-    [SerializeField] private float multiplicationTimerMax = 7f;
+    [SerializeField] private float aliveTimerMaxDefault = 20;
+    [SerializeField] private float multiplicationTimerMaxDefault = 7f;
 
     [SerializeField] protected string poolTag;
-    protected int trophicLevel = 0; // thu bac trong chuoi thuc an
+    [SerializeField] protected int trophicLevel = 0; // thu bac trong chuoi thuc an
 
     private float aliveTimer;
+    private float aliveTimerMax;
     private float multiplicationTimer;
+    private float multiplicationTimerMax;
     
     private int hp = 1;
 
     private Vector3 currentWaypoint;
     private float waypointTimer;
+
+    public virtual void OnInit() {
+        aliveTimerMax = UnityEngine.Random.Range(aliveTimerMaxDefault - 1, aliveTimerMaxDefault + 1);
+        multiplicationTimerMax = UnityEngine.Random.Range(multiplicationTimerMaxDefault - 1, multiplicationTimerMaxDefault + 1);
+
+        aliveTimer = 0;
+        multiplicationTimer = UnityEngine.Random.Range(0, multiplicationTimer * 0.5f);
+    }
 
     public virtual void Damage(IAttackerStat attacker) {
         hp -= attacker.Damage;
@@ -42,7 +52,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
     public virtual void Die() {
         OnDeath?.Invoke(this, EventArgs.Empty);
         // thu vao pool
-        Destroy(gameObject);
+        ObjectPooler.Instance.ReturnToPool(poolTag, this.gameObject);
     }
 
     public virtual void Eat() { }
@@ -51,6 +61,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
 
     private void Start() {
         currentWaypoint = GetRandomWaypoint();
+        OnInit();
     }
 
     private void Update() {
@@ -90,6 +101,10 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
 
             newBacteria.transform.position = transform.position;
             newBacteria.transform.rotation = transform.rotation;
+            
+            if (newBacteria.TryGetComponent(out BaseBacteria bacteria)) {
+                bacteria.SetWaypoint(GetRandomWaypoint(180f));
+            }
 
             multiplicationTimer = 0f; // reset timer
         }
@@ -117,14 +132,14 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         transform.position = new Vector3(transform.position.x, 0f, transform.position.z); // lock Y
     }
 
-    private Vector3 GetRandomWaypoint() {
+    private Vector3 GetRandomWaypoint(float angleOffset = 0) {
         // Random góc trong phạm vi ±60 độ trước mặt (tổng 120 độ)
         float halfAngle = waypointAngle * 0.5f;
-        float randomAngle = UnityEngine.Random.Range(-halfAngle, halfAngle);
+        float randomAngle = UnityEngine.Random.Range(-halfAngle, halfAngle) + angleOffset;
 
         // Xoay hướng hiện tại theo góc random
-        Quaternion rotation = Quaternion.Euler(0f, randomAngle, 0f);
-        Vector3 randomDirection = rotation * transform.forward;
+        Quaternion rotation = Quaternion.Euler(0f, transform.eulerAngles.y + randomAngle, 0f);
+        Vector3 randomDirection = rotation * Vector3.forward;
 
         // Waypoint = vị trí hiện tại + hướng random * bán kính random
         float randomRadius = UnityEngine.Random.Range(waypointRadius * 0.5f, waypointRadius);
@@ -132,6 +147,9 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         return transform.position + randomDirection * randomRadius;
     }
 
+    public void SetWaypoint(Vector3 newWaypoint) {
+        currentWaypoint = newWaypoint;
+    }
 
     public int GetTrophicLevel() {
         return trophicLevel;
