@@ -22,12 +22,15 @@ public class ObjectPooler : MonoBehaviour {
         Instance = this;
     }
 
-    private void Start() {
+    private void OnEnable() {
+        SpawnManager.Instance.OnInitPool += SpawnManager_OnInitPool;
+    }
+
+    private void SpawnManager_OnInitPool(object sender, EventArgs e) {
         OnInitializePool();
     }
 
-
-    private void OnInitializePool() {
+    public void OnInitializePool() {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
         foreach (Pool pool  in pools) {
