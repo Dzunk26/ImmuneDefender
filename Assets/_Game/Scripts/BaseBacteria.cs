@@ -6,6 +6,8 @@ using UnityEngine;
 public class BaseBacteria : MonoBehaviour, IDamageable {
     public event EventHandler OnDeath;
 
+    [SerializeField] private float mapRadius = 500f; // bán kính map
+
     [Header("Movement Settings")]
     public float moveSpeed = 0.5f;              // Tốc độ cơ bản
 
@@ -143,8 +145,19 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
 
         // Waypoint = vị trí hiện tại + hướng random * bán kính random
         float randomRadius = UnityEngine.Random.Range(waypointRadius * 0.5f, waypointRadius);
+        Vector3 candidate = transform.position + randomDirection * randomRadius;
 
-        return transform.position + randomDirection * randomRadius;
+        // Nếu waypoint ra ngoài vùng → kéo về phía tâm map
+        if (!IsInBounds(candidate)) {
+            Vector3 toCenter = (Vector3.zero - transform.position).normalized;
+            candidate = transform.position + toCenter * randomRadius;
+        }
+
+        return candidate;
+    }
+
+    private bool IsInBounds(Vector3 point) {
+        return Vector2.Distance(new Vector2(point.x, point.z), Vector2.zero) < mapRadius;
     }
 
     public void SetWaypoint(Vector3 newWaypoint) {

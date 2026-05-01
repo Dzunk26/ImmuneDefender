@@ -14,7 +14,7 @@ public static class PoissonDiscSample {
         List<Vector3> points = new List<Vector3>();
         List<Vector3> activePoints = new List<Vector3>();
 
-        activePoints.Add(sampleRegionSize / 2);
+        activePoints.Add(new Vector3(sampleRegionSize.x / 2, 0, sampleRegionSize.y / 2));
         while (activePoints.Count > 0) {
             int spawnIndex = Random.Range(0, activePoints.Count);
             Vector3 spawnPoint = activePoints[spawnIndex];
@@ -52,10 +52,10 @@ public static class PoissonDiscSample {
         int searchStartZ = Mathf.Max(0, cellZ - 2);
         int searchEndZ = Mathf.Min(grid.GetLength(1) - 1, cellZ + 2);
 
-        for (int x = searchStartX; x < searchEndX; x++) {
-            for (int z = searchStartZ; z < searchEndZ; z++) {
+        for (int x = searchStartX; x <= searchEndX; x++) {
+            for (int z = searchStartZ; z <= searchEndZ; z++) {
                 int pointIndex = grid[x, z] - 1;
-                if (pointIndex != -1) {
+                if (pointIndex != -1 && pointIndex < points.Count) {
                     float sqrDistance = (newSpawnPoint - points[pointIndex]).sqrMagnitude;
                     if (sqrDistance < radius * radius) {
                         return false;
