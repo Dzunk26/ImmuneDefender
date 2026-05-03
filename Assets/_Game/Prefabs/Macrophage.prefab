@@ -251,6 +251,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MacrophageVisual
       objectReference: {fileID: 0}
+    - target: {fileID: 5862741758110327906, guid: 9a82072a5f27acd4e9fda647f329a88f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5862741758110327917, guid: 9a82072a5f27acd4e9fda647f329a88f, type: 3}
       propertyPath: m_LocalScale.x
       value: 100
@@ -301,6 +305,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5862741758110327917, guid: 9a82072a5f27acd4e9fda647f329a88f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5862741758135333656, guid: 9a82072a5f27acd4e9fda647f329a88f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5862741759082049748, guid: 9a82072a5f27acd4e9fda647f329a88f, type: 3}
+      propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:

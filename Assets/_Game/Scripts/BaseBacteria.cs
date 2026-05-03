@@ -6,13 +6,19 @@ using UnityEngine;
 public class BaseBacteria : MonoBehaviour, IDamageable {
     public event EventHandler OnDeath;
 
+    public enum ActivityLevel { 
+        Full, 
+        Reduced, 
+        Dormant 
+    }
+
     [SerializeField] private float mapRadius = 500f; // bán kính map
 
     [Header("Movement Settings")]
-    public float moveSpeed = 0.5f;              // Tốc độ cơ bản
+    [SerializeField] private float moveSpeed = 0.5f;              // Tốc độ cơ bản
 
     [Header("Smooth Turning")]
-    public float turnSpeed = 0.2f;            // Tốc độ xoay hướng (càng nhỏ càng chậm/mượt, thử 1.5-4.0)
+    [SerializeField] private float turnSpeed = 0.2f;            // Tốc độ xoay hướng (càng nhỏ càng chậm/mượt, thử 1.5-4.0)
     [SerializeField] private float waypointDistance = 0.1f;  // khoảng cách coi là "đến nơi"
     [SerializeField] private float waypointRadius = 2f;      // bán kính random waypoint
     [SerializeField] private float waypointAngle = 120f;     // góc trước mặt để random
@@ -24,6 +30,17 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
     [SerializeField] protected string poolTag;
     [SerializeField] protected int trophicLevel = 0; // thu bac trong chuoi thuc an
 
+    [Header("Activity Level")]
+    [SerializeField] private float fullActivityRange = 50f;
+    [SerializeField] private float reducedActivityRange = 100f;
+    [SerializeField] protected BacteriaSight bacteriaSight;
+    [SerializeField] protected Collider bodyCollider;
+    [SerializeField] protected GameObject bacteriaVisual;
+    [SerializeField] private float updateActivityLevelTimerMax = 0.2f;
+
+
+    private ActivityLevel currentActivityLevel = ActivityLevel.Full;
+    private float updateActivityLevelTimer;
     private float aliveTimer;
     private float aliveTimerMax;
     private float multiplicationTimer;
@@ -66,13 +83,26 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         OnInit();
     }
 
-    private void Update() {
-        HandleUpdate();
+    public void ManualUpdate() {
+        switch (currentActivityLevel) {
+            case ActivityLevel.Full:
+                HandleUpdate();
+                break;
+            case ActivityLevel.Reduced:
+                HandleMultiplication(poolTag);
+                HandleUpdateActivityLevel();
+                SelfDestruct();
+                break;
+            case ActivityLevel.Dormant:
+                HandleUpdateActivityLevel();
+                break; 
+        }
     }
 
     protected virtual void HandleUpdate() {
         HandleMovevement();
         HandleMultiplication(poolTag);
+        HandleUpdateActivityLevel();
         SelfDestruct();
     }
 
@@ -116,6 +146,52 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         aliveTimer += Time.deltaTime;
         if (aliveTimer > aliveTimerMax) {
             Die();
+        }
+    }
+
+    protected void HandleUpdateActivityLevel() {
+        updateActivityLevelTimer += Time.deltaTime;
+        if (updateActivityLevelTimer > updateActivityLevelTimerMax) {
+            UpdateActivityLevel();
+            updateActivityLevelTimer = 0f;
+        }
+    }
+
+    private void UpdateActivityLevel() {
+        float distance = Vector3.Distance(transform.position, Camera.main.transform.position);
+        if (distance < fullActivityRange) {
+            SetActivityLevel(ActivityLevel.Full);
+        }
+        else if (distance < reducedActivityRange) {
+            SetActivityLevel(ActivityLevel.Reduced);
+        }
+        else {
+            SetActivityLevel(ActivityLevel.Dormant);
+        }
+    }
+
+    private void SetActivityLevel(ActivityLevel activityLevel) {
+        if (currentActivityLevel == activityLevel) return;
+
+        currentActivityLevel = activityLevel;
+
+        switch (activityLevel) {
+            case ActivityLevel.Full:
+                bacteriaVisual.SetActive(true);
+                bodyCollider.enabled = true;
+                bacteriaSight.gameObject.SetActive(true);
+                break;
+            case ActivityLevel.Reduced:
+                bacteriaVisual.SetActive(false);
+                bodyCollider.enabled = true;
+                bacteriaSight.gameObject.SetActive(false);
+                break;
+            case ActivityLevel.Dormant:
+                bacteriaVisual.SetActive(false);
+                bodyCollider.enabled = false;
+                bacteriaSight.gameObject.SetActive(false);
+                break;
+
         }
     }
 

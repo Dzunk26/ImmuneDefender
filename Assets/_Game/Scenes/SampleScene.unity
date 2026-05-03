@@ -5,7 +5,7 @@ OcclusionCullingSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_OcclusionBakeSettings:
-    smallestOccluder: 5
+    smallestOccluder: 1
     smallestHole: 0.25
     backfaceThreshold: 100
   m_SceneGUID: 00000000000000000000000000000000
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -330,6 +330,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExternalFlagellaBacteria (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8491824370727096758, guid: 566a42ede760e994b965bb9d683ff117, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -459,7 +463,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0
@@ -570,6 +574,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03840d3654021a4888ab1659b8acc2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapConfigs:
+  - {fileID: 11400000, guid: 23e7df25edb9aec41a2bab5bc0e02303, type: 2}
+  - {fileID: 11400000, guid: 602a1bbe4cc4a274b8fb8918c8c1e039, type: 2}
 --- !u!4 &729538644
 Transform:
   m_ObjectHideFlags: 0
@@ -748,7 +755,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RenderShadows: 1
+  m_RenderShadows: 0
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
@@ -889,6 +896,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExternalFlagellaBacteria (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 8491824370727096758, guid: 566a42ede760e994b965bb9d683ff117, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -951,6 +962,50 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
+--- !u!1 &1392259941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1392259942}
+  - component: {fileID: 1392259943}
+  m_Layer: 0
+  m_Name: ObjectManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1392259942
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392259941}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1392259943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392259941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bbc15422ba1089468be0ff807957f66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1449538063
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1019,7 +1074,6 @@ GameObject:
   - component: {fileID: 1526338004}
   - component: {fileID: 1526338003}
   - component: {fileID: 1526338002}
-  - component: {fileID: 1526338001}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -1027,28 +1081,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &1526338001
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1526338000}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1526338002
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1069,7 +1101,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f68f86f4f5c239640832a48268500350, type: 2}
+  - {fileID: 2100000, guid: 4268d46c5eefe6d4eb775db24a875bca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1158,21 +1190,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 052c0c6518885814e85ee572206ced78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listObjectSpawn:
-  - poolTag: BiofilmBacteria
-    amount: 200
-  - poolTag: DormantBacteria
-    amount: 200
-  - poolTag: ExternalFlagellaBacteria
-    amount: 200
-  - poolTag: IntracellularBacteria
-    amount: 200
-  - poolTag: MolecularMimicryBacteria
-    amount: 200
-  - poolTag: NormalBacteria
-    amount: 200
-  - poolTag: Probiotic
-    amount: 200
   mapWidth: 1000
   mapHeight: 1000
 --- !u!1001 &1567116170
@@ -1332,31 +1349,31 @@ MonoBehaviour:
   pools:
   - tag: BiofilmBacteria
     prefab: {fileID: 6358864846698659459, guid: 893b07c3df1ddae43b7649a98f347e9e, type: 3}
-    size: 250
+    size: 8000
     parent: {fileID: 668552458}
   - tag: DormantBacteria
     prefab: {fileID: 7288996950390742510, guid: 9d58aa7b722d2aa4585fab6823d9c7fc, type: 3}
-    size: 250
+    size: 8000
     parent: {fileID: 668552458}
   - tag: ExternalFlagellaBacteria
     prefab: {fileID: 8491824370727096758, guid: 566a42ede760e994b965bb9d683ff117, type: 3}
-    size: 250
+    size: 8000
     parent: {fileID: 668552458}
   - tag: IntracellularBacteria
     prefab: {fileID: 2821592727258521205, guid: 1c969700594875e4b8d05b70c1b8d197, type: 3}
-    size: 250
+    size: 8000
     parent: {fileID: 668552458}
   - tag: MolecularMimicryBacteria
     prefab: {fileID: 1884674760167819322, guid: b308aacd6861ab242acc4856d1bea5a8, type: 3}
-    size: 250
+    size: 8000
     parent: {fileID: 668552458}
   - tag: NormalBacteria
     prefab: {fileID: 7087477032060458639, guid: 22b6e1469fb4c5645bf4fd7b0b22a291, type: 3}
-    size: 250
+    size: 8000
     parent: {fileID: 668552458}
   - tag: Probiotic
     prefab: {fileID: 5081462570057317254, guid: 66cdeba3fe94c5b418b69164ae871a58, type: 3}
-    size: 250
+    size: 8000
     parent: {fileID: 668552458}
   - tag: Macrophage
     prefab: {fileID: 2542708328174074786, guid: 16508adb9bfb1d645a86ed70fde0229a, type: 3}
@@ -1431,6 +1448,10 @@ PrefabInstance:
     - target: {fileID: 8491824370727096758, guid: 566a42ede760e994b965bb9d683ff117, type: 3}
       propertyPath: m_Name
       value: ExternalFlagellaBacteria (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8491824370727096758, guid: 566a42ede760e994b965bb9d683ff117, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1779,6 +1800,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ExternalFlagellaBacteria
       objectReference: {fileID: 0}
+    - target: {fileID: 8491824370727096758, guid: 566a42ede760e994b965bb9d683ff117, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2026,6 +2051,7 @@ SceneRoots:
   - {fileID: 1526338004}
   - {fileID: 1548411971}
   - {fileID: 729538644}
+  - {fileID: 1392259942}
   - {fileID: 960829071}
   - {fileID: 1638184759}
   - {fileID: 26725116}

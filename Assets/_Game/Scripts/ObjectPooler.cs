@@ -53,6 +53,9 @@ public class ObjectPooler : MonoBehaviour {
         }
 
         GameObject obj = poolDictionary[tag].Dequeue();
+        if (obj.TryGetComponent(out BaseBacteria bacteria)) {
+            ObjectManager.Instance.Register(bacteria);
+        }
         obj.SetActive(true);
         
         return obj;
@@ -65,7 +68,14 @@ public class ObjectPooler : MonoBehaviour {
             return;
         }
 
+        if (obj.TryGetComponent(out BaseBacteria bacteria)) {
+            ObjectManager.Instance.Unregister(bacteria);
+        }
         obj.SetActive(false);
         poolDictionary[tag].Enqueue(obj);
+    }
+
+    private void OnDisable() {
+        SpawnManager.Instance.OnInitPool -= SpawnManager_OnInitPool;
     }
 }

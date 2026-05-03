@@ -14,6 +14,8 @@ public class CameraPlayer : MonoBehaviour, IAttackerStat {
     private int lazeDamage = 1;
     private int accuracy = 100;
     private LayerMask interactableLayer;
+    private Vector3 moveDir = new Vector3();
+    private Vector2 inputVector = new Vector2();
 
 
     private void Start() {
@@ -30,8 +32,8 @@ public class CameraPlayer : MonoBehaviour, IAttackerStat {
     }
 
     private void HandleMovement() {
-        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
-        Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
+        inputVector = gameInput.GetMovementVectorNormalized();
+        moveDir = new Vector3(inputVector.x, 0, inputVector.y);
         transform.position += moveDir * moveSpeed * Time.deltaTime;
     }
 

@@ -3,23 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class ObjectSpawnConfig {
-    public string poolTag;
-    public int amount;
-}
-
 public class SpawnSystem : MonoBehaviour {
-    [SerializeField] private List<ObjectSpawnConfig> listObjectSpawn;
     [SerializeField] private float mapWidth = 1000f;
     [SerializeField] private float mapHeight = 1000f;
+    private float safetyFactor = 0.9f; // he so an toan dam bao vi tao du so diem spawn vi khuan
 
     private void OnEnable() {
-        SpawnManager.Instance.OnSpawnObject += SpawnManager_OnSpawnObject;
+        SpawnManager.Instance.OnSpawnObjects += SpawnManager_OnSpawnObject;
     }
 
-    private void SpawnManager_OnSpawnObject(object sender, EventArgs e) {
-        Spawn(listObjectSpawn);
+    private void SpawnManager_OnSpawnObject(object sender, SpawnManager.OnSpawnObjectsEventArg e) {
+        Spawn(e.wave.listObjectSpawn);
     }
 
     private void Spawn(List<ObjectSpawnConfig> listObjectSpawn) {
@@ -30,7 +24,7 @@ public class SpawnSystem : MonoBehaviour {
 
         float mapArea = mapWidth * mapHeight;
         float objectArea = mapArea / totalCount;
-        float radius = Mathf.Sqrt(objectArea) * 0.5f;
+        float radius = Mathf.Sqrt(objectArea) * safetyFactor;
 
         List<Vector3> points = PoissonDiscSample.GeneratePoints(radius,new Vector2(mapWidth, mapHeight));
         ShuffleList(points);
@@ -55,5 +49,9 @@ public class SpawnSystem : MonoBehaviour {
             int randomIndex = UnityEngine.Random.Range(0, i + 1);
             (list[i], list[randomIndex]) = (list[randomIndex], list[i]); // swap
         }
+    }
+
+    private void OnDisable() {
+        SpawnManager.Instance.OnSpawnObjects -= SpawnManager_OnSpawnObject;
     }
 }

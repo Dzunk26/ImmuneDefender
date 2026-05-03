@@ -15,6 +15,7 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
 
     protected override void HandleUpdate() {
         HandleMultiplication(poolTag);
+        HandleUpdateActivityLevel();
         SelfDestruct();
 
         if (isSliding) {

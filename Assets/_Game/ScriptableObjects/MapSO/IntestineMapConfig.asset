@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 646610c9e9f4f7f4781d78b014c3e2cc, type: 3}
+  m_Name: IntestineMapConfig
+  m_EditorClassIdentifier: 
+  mapName: 
+  waveConfigs:
+  - {fileID: 11400000, guid: 3af0e7f79e689b64fbace7d625452383, type: 2}
+  - {fileID: 11400000, guid: 24158b9c8e07c144bb94e529d123a19a, type: 2}

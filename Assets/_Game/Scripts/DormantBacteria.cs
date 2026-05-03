@@ -8,9 +8,6 @@ public class DormantBacteria : BaseBacteria, IUntargetable {
     public event EventHandler OnBecameUntargetable;
     public event EventHandler OnBecameTargetable;
 
-    [SerializeField] private BacteriaSight bacteriaSight;
-    [SerializeField] private Collider bodyCollider;
-
     private float dormancyTimer;
     private float dormancyTimerMax = 10f;
     private float dormancyChance = 0.5f;
@@ -50,7 +47,6 @@ public class DormantBacteria : BaseBacteria, IUntargetable {
 
     //vi khuan ngu dong
     private void EnterDormancy() {
-        Debug.Log("Dormancy");
         isDormant = true;
         dormancyTimer = 0f;
         bodyCollider.enabled = false;

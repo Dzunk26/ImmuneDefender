@@ -8,9 +8,6 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
     public event EventHandler OnBecameUntargetable;
     public event EventHandler OnBecameTargetable;
 
-    [SerializeField] private GameObject visual;
-    [SerializeField] private Collider bodyCollider;
-
     private Macrophage currentHost;
 
     private bool isParasiting => currentHost != null;
@@ -24,6 +21,7 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
 
     protected override void HandleUpdate() {
         HandleMultiplication(poolTag);
+        HandleUpdateActivityLevel();
         SelfDestruct();
 
         if (!isParasiting) {
@@ -39,7 +37,7 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
         transform.SetParent(host.transform);
         transform.localPosition = Vector3.zero;
 
-        visual.SetActive(false);
+        bacteriaVisual.SetActive(false);
         bodyCollider.enabled = false;
         OnBecameUntargetable?.Invoke(this, EventArgs.Empty);
     }
@@ -55,7 +53,7 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
 
         transform.SetParent(null);
 
-        visual.SetActive(true);
+        bacteriaVisual.SetActive(true);
         bodyCollider.enabled = true;
         currentHost = null;
         OnBecameTargetable?.Invoke(this, EventArgs.Empty);
