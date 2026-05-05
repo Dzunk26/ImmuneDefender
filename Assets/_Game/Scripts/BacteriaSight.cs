@@ -10,7 +10,6 @@ public class BacteriaSight : MonoBehaviour {
     [SerializeField] private BaseBacteria owner;
 
     private List<BaseBacteria> listEdibleBacteriaInRange = new List<BaseBacteria>(); //danh sach vi khuan co the an duoc trong tam nhin
-    private List<BaseBacteria> listInedibleBacteriaInRange = new List<BaseBacteria>(); // danh sach vi khuan khong the an duoc trong tam nhin
     private List<Macrophage> listMacrophageInRange = new List<Macrophage>(); //danh sach dai thuc bao trong tam nhin
 
     private bool isInDanger = false;
@@ -28,12 +27,6 @@ public class BacteriaSight : MonoBehaviour {
                 UpdatePreyState();
                    
             }
-            else if (CheckInedible(bacteria)) {
-                listInedibleBacteriaInRange.Add(bacteria);
-                OnDangerDetected?.Invoke(this, EventArgs.Empty);
-                bacteria.OnDeath += Bacteria_OnDeath;
-                UpdateDangerState();
-            }
         }
 
         if (other.gameObject.TryGetComponent(out Macrophage macrophage)) {
@@ -48,7 +41,6 @@ public class BacteriaSight : MonoBehaviour {
             bacteria.OnDeath -= Bacteria_OnDeath;
 
             listEdibleBacteriaInRange.Remove(bacteria);
-            listInedibleBacteriaInRange.Remove(bacteria);
             UpdatePreyState();
             UpdateDangerState();
         }
@@ -72,14 +64,13 @@ public class BacteriaSight : MonoBehaviour {
         bacteria.OnDeath -= Bacteria_OnDeath;
 
         listEdibleBacteriaInRange.Remove(bacteria);
-        listInedibleBacteriaInRange.Remove(bacteria);
 
         UpdateDangerState();
         UpdatePreyState();
     }
 
     private void UpdateDangerState() {
-        bool danger = listMacrophageInRange.Count > 0 || listInedibleBacteriaInRange.Count > 0;
+        bool danger = listMacrophageInRange.Count > 0;
 
         if (!isInDanger && danger) {
             isInDanger = true;
@@ -103,11 +94,7 @@ public class BacteriaSight : MonoBehaviour {
     }
 
     private bool CheckEdible(BaseBacteria other) {
-        return owner.GetTrophicLevel() > other.GetTrophicLevel();
-    }
-
-    private bool CheckInedible(BaseBacteria other) {
-        return owner.GetTrophicLevel() < other.GetTrophicLevel();
+        return owner.GetSpeciesId() != other.GetSpeciesId();
     }
 
     public BaseBacteria GetClosestPrey(Vector3 fromPosition) {

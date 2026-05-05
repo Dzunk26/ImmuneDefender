@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseBacteria : MonoBehaviour, IDamageable {
+public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
     public event EventHandler OnDeath;
 
     public enum ActivityLevel { 
@@ -12,7 +12,16 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         Dormant 
     }
 
+    public enum BacteriaState {
+        Wander,
+        Hunt
+    }
+
+    public int Damage => damage;
+    public int Accuracy => accuracy;
+
     [SerializeField] private float mapRadius = 500f; // bán kính map
+    [SerializeField] private float eatDistance = 1f; 
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 0.5f;              // Tốc độ cơ bản
@@ -24,12 +33,6 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
     [SerializeField] private float waypointAngle = 120f;     // góc trước mặt để random
     [SerializeField] private float waypointTimerMax = 3f;    // thời gian tối đa trước khi random lại
 
-    [SerializeField] private float aliveTimerMaxDefault = 20;
-    [SerializeField] private float multiplicationTimerMaxDefault = 7f;
-
-    [SerializeField] protected string poolTag;
-    [SerializeField] protected int trophicLevel = 0; // thu bac trong chuoi thuc an
-
     [Header("Activity Level")]
     [SerializeField] private float fullActivityRange = 50f;
     [SerializeField] private float reducedActivityRange = 100f;
@@ -38,28 +41,44 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
     [SerializeField] protected GameObject bacteriaVisual;
     [SerializeField] private float updateActivityLevelTimerMax = 0.2f;
 
+    [SerializeField] private float aliveTimerMaxDefault = 20;
+    [SerializeField] private float multiplicationTimerMaxDefault = 7f;
+    [SerializeField] private float hungerTimerMaxDefault = 15f;
 
+    [SerializeField] protected string poolTag;
+    [SerializeField] protected int speciesId = 0; // ma loai vi khuan
+
+
+    protected BacteriaState bacteriaState = BacteriaState.Wander;
     private ActivityLevel currentActivityLevel = ActivityLevel.Full;
     private float updateActivityLevelTimer;
     private float aliveTimer;
     private float aliveTimerMax;
     private float multiplicationTimer;
     private float multiplicationTimerMax;
+    private float hungerTimer;
+    private float hungerTimerMax;
     
     private int hp = 1;
+    private int damage = 2;
+    private int accuracy = 100;
 
     private Vector3 currentWaypoint;
     private float waypointTimer;
 
+    private BaseBacteria currentPrey;
+
     public virtual void OnInit() {
         aliveTimerMax = UnityEngine.Random.Range(aliveTimerMaxDefault - 1, aliveTimerMaxDefault + 1);
         multiplicationTimerMax = UnityEngine.Random.Range(multiplicationTimerMaxDefault - 1, multiplicationTimerMaxDefault + 1);
+        hungerTimerMax = UnityEngine.Random.Range(hungerTimerMaxDefault - 1, hungerTimerMaxDefault + 1);
 
         aliveTimer = 0;
-        multiplicationTimer = UnityEngine.Random.Range(0, multiplicationTimer * 0.5f);
+        multiplicationTimer = UnityEngine.Random.Range(0, multiplicationTimerMaxDefault * 0.3f);
+        hungerTimer = UnityEngine.Random.Range(0, hungerTimerMaxDefault * 0.3f);
     }
 
-    public virtual void Damage(IAttackerStat attacker) {
+    public virtual void TakeDamage(IAttackerStat attacker) {
         hp -= attacker.Damage;
         if (hp <= 0) {
             Die();
@@ -74,13 +93,22 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         ObjectPooler.Instance.ReturnToPool(poolTag, this.gameObject);
     }
 
-    public virtual void Eat() { }
+    public virtual void Eat(BaseBacteria prey) {
+        prey.TakeDamage(this);
+        hungerTimer = 0f; // no bụng → reset hunger
+        EnterWanderState();
+    }
 
     public virtual void Eaten() { }
 
     private void Start() {
+        bacteriaSight.OnPreyDetected += BacteriaSight_OnPreyDetected;
         currentWaypoint = GetRandomWaypoint();
         OnInit();
+    }
+
+    private void BacteriaSight_OnPreyDetected(object sender, EventArgs e) {
+        TryEnterHuntState();
     }
 
     public void ManualUpdate() {
@@ -118,7 +146,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
             waypointTimer = 0f;
         }
 
-        MoveTowardWaypoint();
+        MoveToTarget(currentWaypoint);
     }
 
     protected void HandleMultiplication(string poolTag) {
@@ -154,6 +182,50 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         if (updateActivityLevelTimer > updateActivityLevelTimerMax) {
             UpdateActivityLevel();
             updateActivityLevelTimer = 0f;
+        }
+    }
+
+    private void HandleState() {
+        switch (bacteriaState) {
+            case BacteriaState.Wander:
+                HandleWander();
+                break;
+            case BacteriaState.Hunt:
+                HandleHunt();
+                break;
+        }
+    }
+
+    private void HandleWander() {
+        HandleMovevement();
+
+        hungerTimer += Time.deltaTime;
+        TryEnterHuntState();
+    }
+
+    private void TryEnterHuntState() {
+        if (hungerTimer > hungerTimerMax) {
+            currentPrey = bacteriaSight.GetClosestPrey(transform.position);
+            if (currentPrey != null) {
+                EnterHuntState();
+            }
+        }
+    }
+
+    private void EnterHuntState() {
+        bacteriaState = BacteriaState.Hunt;
+    }
+
+    private void EnterWanderState() {
+        bacteriaState = BacteriaState.Wander;
+    }
+
+    private void HandleHunt() {
+        MoveToTarget(currentPrey.transform.position);
+
+        // Đủ gần → ăn
+        if (Vector3.Distance(transform.position, currentPrey.transform.position) < eatDistance) {
+            Eat(currentPrey);
         }
     }
 
@@ -195,8 +267,8 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         }
     }
 
-    private void MoveTowardWaypoint() {
-        Vector3 direction = (currentWaypoint - transform.position).normalized;
+    private void MoveToTarget(Vector3 targetPosition) {
+        Vector3 direction = (targetPosition - transform.position).normalized;
         direction.y = 0f;
 
         // Xoay mượt về hướng waypoint
@@ -240,7 +312,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable {
         currentWaypoint = newWaypoint;
     }
 
-    public int GetTrophicLevel() {
-        return trophicLevel;
+    public int GetSpeciesId() {
+        return speciesId;
     }
 }

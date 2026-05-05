@@ -29,7 +29,7 @@ public class Macrophage : MonoBehaviour, IDamageable {
     private float updateTargetTimerMax = 1f;
     private bool isInfected = false;
 
-    public void Damage(IAttackerStat attacker) {
+    public void TakeDamage(IAttackerStat attacker) {
         if (!isInfected) return;
 
         Die();

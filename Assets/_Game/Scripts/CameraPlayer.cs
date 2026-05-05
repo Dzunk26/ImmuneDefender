@@ -41,7 +41,7 @@ public class CameraPlayer : MonoBehaviour, IAttackerStat {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, interactableLayer)) {
             if (hit.collider.TryGetComponent(out IDamageable damageable)) {
-                damageable.Damage(this);
+                damageable.TakeDamage(this);
             }
         }
     }

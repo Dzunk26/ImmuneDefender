@@ -23,7 +23,7 @@ public class AttackArea : MonoBehaviour, IAttackerStat {
     public void Phagocytosis(BaseBacteria bacteria) {
         if (!bacteria.IsHostile()) return;
 
-        bacteria.Damage(this);
+        bacteria.TakeDamage(this);
     }
 
     public bool CheckAttackState() {
