@@ -31,7 +31,8 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
 
     public void EnterHost(Macrophage host) {
         currentHost = host;
-        currentHost.OnDeath += Host_OnDeath;
+        currentHost.OnDeath += Macrophage_OnDeath;
+        currentHost.OnApoptosis += Macrophage_OnApoptosis;
         currentHost.SetInfected(true);
 
         transform.SetParent(host.transform);
@@ -42,13 +43,19 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
         OnBecameUntargetable?.Invoke(this, EventArgs.Empty);
     }
 
-    private void Host_OnDeath(object sender, EventArgs e) {
-        currentHost.OnDeath -= Host_OnDeath;
+    private void Macrophage_OnApoptosis(object sender, EventArgs e) {
+        currentHost.OnDeath -= Macrophage_OnDeath;
+        currentHost.OnApoptosis -= Macrophage_OnApoptosis;
+        Die();
+    }
+
+    private void Macrophage_OnDeath(object sender, EventArgs e) {
+        currentHost.OnDeath -= Macrophage_OnDeath;
+        currentHost.OnApoptosis -= Macrophage_OnApoptosis;
         ExitHost();
     }
 
     private void ExitHost() {
-        currentHost.OnDeath -= Host_OnDeath;
         currentHost.SetInfected(false);
 
         transform.SetParent(null);

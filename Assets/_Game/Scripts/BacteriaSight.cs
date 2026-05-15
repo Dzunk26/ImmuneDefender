@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class BacteriaSight : MonoBehaviour {
     public event EventHandler OnDangerDetected; //phat hien nguy hiem
-    public event EventHandler OnPreyDetected; //phat hien con moi
+    public event EventHandler OnPreyChange;
 
     [SerializeField] private BaseBacteria owner;
 
-    private List<BaseBacteria> listEdibleBacteriaInRange = new List<BaseBacteria>(); //danh sach vi khuan co the an duoc trong tam nhin
+    private List<BaseBacteria> listPreyInRange = new List<BaseBacteria>(); //danh sach vi khuan co the an duoc trong tam nhin
+    private List<BaseBacteria> listTargetablePreyInRange = new List<BaseBacteria>(); //danh sach vi khuan co the target va an duoc trong tam nhin
     private List<Macrophage> listMacrophageInRange = new List<Macrophage>(); //danh sach dai thuc bao trong tam nhin
+    private BaseBacteria cachedClosestPrey;
 
     private bool isInDanger = false;
-    private bool hasPrey = false;
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.TryGetComponent(out BaseBacteria bacteria) && bacteria != owner) {
@@ -22,7 +23,8 @@ public class BacteriaSight : MonoBehaviour {
                     untargetable.OnBecameUntargetable += Untargetable_OnBecameUntargetable;
                     untargetable.OnBecameTargetable += Untargetable_OnBecameTargetable;
                 }
-                listEdibleBacteriaInRange.Add(bacteria);
+                listPreyInRange.Add(bacteria);
+                listTargetablePreyInRange.Add(bacteria);
                 bacteria.OnDeath += Bacteria_OnDeath;
                 UpdatePreyState();
                    
@@ -38,11 +40,7 @@ public class BacteriaSight : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.TryGetComponent(out BaseBacteria bacteria)) {
-            bacteria.OnDeath -= Bacteria_OnDeath;
-
-            listEdibleBacteriaInRange.Remove(bacteria);
-            UpdatePreyState();
-            UpdateDangerState();
+            OnBacteriaInsightDisappear(bacteria);
         }
 
         if (other.gameObject.TryGetComponent(out Macrophage macrophage)) {
@@ -52,18 +50,33 @@ public class BacteriaSight : MonoBehaviour {
     }
 
     private void Untargetable_OnBecameTargetable(object sender, EventArgs e) {
-        
+        BaseBacteria bacteria = sender as BaseBacteria;
+
+        listTargetablePreyInRange.Add(bacteria);
     }
 
     private void Untargetable_OnBecameUntargetable(object sender, EventArgs e) {
-        
+        BaseBacteria bacteria = sender as BaseBacteria;
+
+        listTargetablePreyInRange.Remove(bacteria);
+    }
+
+    private void OnBacteriaInsightDisappear(BaseBacteria bacteria) {
+        bacteria.OnDeath -= Bacteria_OnDeath;
+
+        if (bacteria is IUntargetable untargetable) {
+            untargetable.OnBecameUntargetable -= Untargetable_OnBecameTargetable;
+            untargetable.OnBecameTargetable -= Untargetable_OnBecameUntargetable;
+        }
+
+        listPreyInRange.Remove(bacteria);
+        listTargetablePreyInRange.Remove(bacteria);
+
     }
 
     private void Bacteria_OnDeath(object sender, EventArgs e) {
         BaseBacteria bacteria = sender as BaseBacteria;
-        bacteria.OnDeath -= Bacteria_OnDeath;
-
-        listEdibleBacteriaInRange.Remove(bacteria);
+        OnBacteriaInsightDisappear(bacteria);
 
         UpdateDangerState();
         UpdatePreyState();
@@ -82,15 +95,8 @@ public class BacteriaSight : MonoBehaviour {
     }
 
     private void UpdatePreyState() {
-        bool prey = listEdibleBacteriaInRange.Count > 0; //check con moi trong tam nhin
-
-        if (prey && !hasPrey) {
-            hasPrey = true;
-            OnPreyDetected?.Invoke(this, EventArgs.Empty);
-        }
-        else if (!prey && hasPrey) {
-            hasPrey = false;
-        }
+        cachedClosestPrey = GetClosestPrey(owner.transform.position);
+        OnPreyChange?.Invoke(this, EventArgs.Empty);
     }
 
     private bool CheckEdible(BaseBacteria other) {
@@ -101,15 +107,19 @@ public class BacteriaSight : MonoBehaviour {
         BaseBacteria closest = null;
         float minDistance = Mathf.Infinity;
 
-        foreach (BaseBacteria bacteria in listEdibleBacteriaInRange) {
-            float distance = Vector3.Distance(fromPosition, bacteria.transform.position);
+        foreach (BaseBacteria bacteria in listPreyInRange) {
+            float distance = (fromPosition - bacteria.transform.position).sqrMagnitude;
 
-            if (distance < minDistance) {
+            if (distance < minDistance * minDistance) {
                 closest = bacteria;
                 minDistance = distance;
             }
         }
 
         return closest;
+    }
+
+    public BaseBacteria GetClosestPrey() {
+        return cachedClosestPrey;
     }
 }

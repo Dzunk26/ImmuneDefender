@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //dai thuc bao
-public class Macrophage : MonoBehaviour, IDamageable {
+public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
     public event EventHandler OnDeath;
+    public event EventHandler OnApoptosis;
+    public event EventHandler OnInfected;
+
+    [SerializeField] private string poolTag;
 
     [Header("Movement")]
     [SerializeField] private MacrophageSight macrophageSight;
@@ -19,6 +23,9 @@ public class Macrophage : MonoBehaviour, IDamageable {
     [SerializeField] private float waypointDistance = 0.1f;
     [SerializeField] private float waypointTimerMax = 3f;
 
+    [SerializeField] private float aliveTimerMaxDefault = 1f;
+    [SerializeField] private float updateTargetTimerMax = 1f;
+
     private enum State { Wander, Chase }
     private State state = State.Wander;
 
@@ -26,13 +33,13 @@ public class Macrophage : MonoBehaviour, IDamageable {
     private Vector3 currentWaypoint;
     private float waypointTimer;
     private float updateTargetTimer;
-    private float updateTargetTimerMax = 1f;
-    private bool isInfected = false;
+    private float aliveTimerMax;
+    private float aliveTimer;
 
-    public void TakeDamage(IAttackerStat attacker) {
-        if (!isInfected) return;
+    public bool IsInfected { get; private set; }
 
-        Die();
+    private void OnEnable() {
+        OnInit();
     }
 
     private void Start() {
@@ -53,6 +60,16 @@ public class Macrophage : MonoBehaviour, IDamageable {
                 State.Chase: HandleChase(); 
                 break;
         }
+    }
+
+    private void OnInit() {
+        aliveTimerMax = UnityEngine.Random.Range(aliveTimerMaxDefault - 1, aliveTimerMaxDefault + 1);
+
+        currentWaypoint = GetRandomWaypoint();
+        currentTarget = null;
+        updateTargetTimer = 0f;
+        waypointTimer = 0f;
+        aliveTimer = 0f;
     }
 
     private void UpdateTarget() {
@@ -120,13 +137,34 @@ public class Macrophage : MonoBehaviour, IDamageable {
         return transform.position + randomDirection * randomRadius;
     }
 
+    private void SelfDestruct() {
+        aliveTimer += Time.deltaTime;
+        if(aliveTimer > aliveTimerMax) {
+            Die();
+        }
+    }
+
+    public void TakeDamage(IAttackerStat attacker) {
+        if (!IsInfected) return;
+
+        Die();
+    }
+
     public void Die() {
         OnDeath?.Invoke(this, EventArgs.Empty);
         Destroy(gameObject);
+        //ObjectPooler.Instance.ReturnToPool(poolTag, this.gameObject);
+    }
+
+    public void Apoptosis() {
+        OnApoptosis?.Invoke(this, EventArgs.Empty);
+        Destroy(gameObject);
+        //ObjectPooler.Instance.ReturnToPool(poolTag, this.gameObject);
     }
 
     public void SetInfected(bool infected) {
-        isInfected = infected;
+        if (IsInfected) return;
+        IsInfected = infected;
+        if (infected) OnInfected?.Invoke(this, EventArgs.Empty);
     }
-
 }

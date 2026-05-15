@@ -20,18 +20,18 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
     public int Damage => damage;
     public int Accuracy => accuracy;
 
-    [SerializeField] private float mapRadius = 500f; // bán kính map
+    [SerializeField] private float mapRadius = 500f; // ban kinh map
     [SerializeField] private float eatDistance = 1f; 
 
     [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 0.5f;              // Tốc độ cơ bản
+    [SerializeField] private float moveSpeed = 0.5f;
 
     [Header("Smooth Turning")]
-    [SerializeField] private float turnSpeed = 0.2f;            // Tốc độ xoay hướng (càng nhỏ càng chậm/mượt, thử 1.5-4.0)
-    [SerializeField] private float waypointDistance = 0.1f;  // khoảng cách coi là "đến nơi"
-    [SerializeField] private float waypointRadius = 2f;      // bán kính random waypoint
-    [SerializeField] private float waypointAngle = 120f;     // góc trước mặt để random
-    [SerializeField] private float waypointTimerMax = 3f;    // thời gian tối đa trước khi random lại
+    [SerializeField] private float turnSpeed = 0.2f;
+    [SerializeField] private float waypointDistance = 0.1f;
+    [SerializeField] private float waypointRadius = 2f;
+    [SerializeField] private float waypointAngle = 120f;
+    [SerializeField] private float waypointTimerMax = 3f;
 
     [Header("Activity Level")]
     [SerializeField] private float fullActivityRange = 50f;
@@ -49,7 +49,8 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
     [SerializeField] protected int speciesId = 0; // ma loai vi khuan
 
 
-    protected BacteriaState bacteriaState = BacteriaState.Wander;
+    private Transform cameraTranform;          
+    protected BacteriaState bacteriaState;
     private ActivityLevel currentActivityLevel = ActivityLevel.Full;
     private float updateActivityLevelTimer;
     private float aliveTimer;
@@ -68,7 +69,18 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
 
     private BaseBacteria currentPrey;
 
+    private void OnEnable() {
+        OnInit();
+    }
+    private void Start() {
+        cameraTranform = Camera.main.transform;
+        bacteriaSight.OnPreyChange += BacteriaSight_OnPreyChange;
+        currentWaypoint = GetRandomWaypoint();
+    }
+
     public virtual void OnInit() {
+        bacteriaState = BacteriaState.Wander;
+
         aliveTimerMax = UnityEngine.Random.Range(aliveTimerMaxDefault - 1, aliveTimerMaxDefault + 1);
         multiplicationTimerMax = UnityEngine.Random.Range(multiplicationTimerMaxDefault - 1, multiplicationTimerMaxDefault + 1);
         hungerTimerMax = UnityEngine.Random.Range(hungerTimerMaxDefault - 1, hungerTimerMaxDefault + 1);
@@ -95,16 +107,15 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
 
     public virtual void Eat(BaseBacteria prey) {
         prey.TakeDamage(this);
-        hungerTimer = 0f; // no bụng → reset hunger
+        hungerTimer = 0f;
         EnterWanderState();
     }
 
     public virtual void Eaten() { }
 
-    private void Start() {
-        bacteriaSight.OnPreyDetected += BacteriaSight_OnPreyDetected;
-        currentWaypoint = GetRandomWaypoint();
-        OnInit();
+
+    private void BacteriaSight_OnPreyChange(object sender, EventArgs e) {
+        currentPrey = bacteriaSight.GetClosestPrey();
     }
 
     private void BacteriaSight_OnPreyDetected(object sender, EventArgs e) {
@@ -128,7 +139,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
     }
 
     protected virtual void HandleUpdate() {
-        HandleMovevement();
+        HandleState();
         HandleMultiplication(poolTag);
         HandleUpdateActivityLevel();
         SelfDestruct();
@@ -138,7 +149,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
         waypointTimer += Time.deltaTime;
 
         // Random waypoint mới nếu đến nơi hoặc hết thời gian
-        bool arrivedAtWaypoint = Vector3.Distance(transform.position, currentWaypoint) < waypointDistance;
+        bool arrivedAtWaypoint = (transform.position - currentWaypoint).sqrMagnitude < waypointDistance * waypointDistance;
         bool waypointExpired = waypointTimer >= waypointTimerMax;
 
         if (arrivedAtWaypoint || waypointExpired) {
@@ -205,7 +216,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
 
     private void TryEnterHuntState() {
         if (hungerTimer > hungerTimerMax) {
-            currentPrey = bacteriaSight.GetClosestPrey(transform.position);
+            //currentPrey = bacteriaSight.GetClosestPrey(transform.position);
             if (currentPrey != null) {
                 EnterHuntState();
             }
@@ -221,20 +232,27 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
     }
 
     private void HandleHunt() {
-        MoveToTarget(currentPrey.transform.position);
+        if (currentPrey == null) {
+            EnterWanderState();
+            return;
+        }
+
+        Vector3 preyPosition = currentPrey.transform.position;
+        float sqrDistance = (transform.position - preyPosition).sqrMagnitude;
+        MoveToTarget(preyPosition);
 
         // Đủ gần → ăn
-        if (Vector3.Distance(transform.position, currentPrey.transform.position) < eatDistance) {
+        if (sqrDistance < eatDistance * eatDistance) {
             Eat(currentPrey);
         }
     }
 
     private void UpdateActivityLevel() {
-        float distance = Vector3.Distance(transform.position, Camera.main.transform.position);
-        if (distance < fullActivityRange) {
+        float sqrDistance = (transform.position - cameraTranform.position).sqrMagnitude;
+        if (sqrDistance < fullActivityRange * fullActivityRange) {
             SetActivityLevel(ActivityLevel.Full);
         }
-        else if (distance < reducedActivityRange) {
+        else if (sqrDistance < reducedActivityRange * reducedActivityRange) {
             SetActivityLevel(ActivityLevel.Reduced);
         }
         else {
