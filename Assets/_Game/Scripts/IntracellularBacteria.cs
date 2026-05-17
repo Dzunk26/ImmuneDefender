@@ -26,6 +26,7 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
 
         if (!isParasiting) {
             HandleMovevement();
+            HandleState();
         }
     }
 

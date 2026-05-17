@@ -36,6 +36,8 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
     }
 
     public bool TryDodge(int attackerAccuracy) {
+        if (bacteriaState == BacteriaState.Hunt) return false;
+
         float hitChance = (float)attackerAccuracy / (attackerAccuracy + dodgeChance); //calculate hitChance: hitChance is ability attack successfully
         hitChance = Mathf.Clamp01(hitChance); //limit hitChance in value range 0-1
 

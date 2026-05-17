@@ -76,7 +76,7 @@ public class MacrophageSight : MonoBehaviour
         float minDistance = Mathf.Infinity;
 
         foreach (BaseBacteria bacteria in listTargetableBacteriaInRange) {
-            float distance = Vector3.Distance(fromPosition, bacteria.transform.position);
+            float distance = (fromPosition - bacteria.transform.position).sqrMagnitude;
 
             if (distance < minDistance) {
                 closest = bacteria;

@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
+public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable {
     public event EventHandler OnDeath;
+    public event EventHandler OnStartHunting;
+    public event EventHandler OnStopHunting;
 
     public enum ActivityLevel { 
         Full, 
@@ -19,6 +21,8 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
 
     public int Damage => damage;
     public int Accuracy => accuracy;
+
+    public bool IsHunting => bacteriaState == BacteriaState.Hunt;
 
     [SerializeField] private float mapRadius = 500f; // ban kinh map
     [SerializeField] private float eatDistance = 1f; 
@@ -196,7 +200,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
         }
     }
 
-    private void HandleState() {
+    protected void HandleState() {
         switch (bacteriaState) {
             case BacteriaState.Wander:
                 HandleWander();
@@ -224,11 +228,15 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat {
     }
 
     private void EnterHuntState() {
+        if (bacteriaState == BacteriaState.Hunt) return;
         bacteriaState = BacteriaState.Hunt;
+        OnStartHunting?.Invoke(this, EventArgs.Empty);
     }
 
     private void EnterWanderState() {
+        if (bacteriaState == BacteriaState.Wander) return;
         bacteriaState = BacteriaState.Wander;
+        OnStopHunting?.Invoke(this, EventArgs.Empty);
     }
 
     private void HandleHunt() {

@@ -11,6 +11,7 @@ public class BacteriaSight : MonoBehaviour {
 
     private List<BaseBacteria> listPreyInRange = new List<BaseBacteria>(); //danh sach vi khuan co the an duoc trong tam nhin
     private List<BaseBacteria> listTargetablePreyInRange = new List<BaseBacteria>(); //danh sach vi khuan co the target va an duoc trong tam nhin
+    private List<BaseBacteria> listHuntingBacteriaInRange = new List<BaseBacteria>(); //danh sach vi khuan o trang thai hunt trong tam nhin
     private List<Macrophage> listMacrophageInRange = new List<Macrophage>(); //danh sach dai thuc bao trong tam nhin
     private BaseBacteria cachedClosestPrey;
 
@@ -22,6 +23,15 @@ public class BacteriaSight : MonoBehaviour {
                 if (bacteria is IUntargetable untargetable) {
                     untargetable.OnBecameUntargetable += Untargetable_OnBecameUntargetable;
                     untargetable.OnBecameTargetable += Untargetable_OnBecameTargetable;
+                }
+                if(bacteria is IHuntable huntable) {
+                    huntable.OnStartHunting += Huntable_OnStartHunting;
+                    huntable.OnStopHunting += Huntable_OnStopHunting;
+                    
+                    if (huntable.IsHunting) {
+                        listHuntingBacteriaInRange.Add(bacteria);
+                        UpdateDangerState();
+                    }
                 }
                 listPreyInRange.Add(bacteria);
                 listTargetablePreyInRange.Add(bacteria);
@@ -37,6 +47,21 @@ public class BacteriaSight : MonoBehaviour {
         }
     }
 
+    private void Huntable_OnStartHunting(object sender, EventArgs e) {
+        BaseBacteria bacteria = sender as BaseBacteria;
+
+        if (!listHuntingBacteriaInRange.Contains(bacteria)) {
+            listHuntingBacteriaInRange.Add(bacteria);
+            UpdateDangerState();
+        }
+    }
+
+    private void Huntable_OnStopHunting(object sender, EventArgs e) {
+        BaseBacteria bacteria = sender as BaseBacteria;
+
+        listHuntingBacteriaInRange.Remove(bacteria);
+        UpdateDangerState();
+    }
 
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.TryGetComponent(out BaseBacteria bacteria)) {
@@ -65,26 +90,31 @@ public class BacteriaSight : MonoBehaviour {
         bacteria.OnDeath -= Bacteria_OnDeath;
 
         if (bacteria is IUntargetable untargetable) {
-            untargetable.OnBecameUntargetable -= Untargetable_OnBecameTargetable;
-            untargetable.OnBecameTargetable -= Untargetable_OnBecameUntargetable;
+            untargetable.OnBecameUntargetable -= Untargetable_OnBecameUntargetable;
+            untargetable.OnBecameTargetable -= Untargetable_OnBecameTargetable;
+        }
+
+        if (bacteria is IHuntable huntable) {
+            huntable.OnStartHunting -= Huntable_OnStartHunting;
+            huntable.OnStopHunting -= Huntable_OnStopHunting;
         }
 
         listPreyInRange.Remove(bacteria);
         listTargetablePreyInRange.Remove(bacteria);
+        listHuntingBacteriaInRange.Remove(bacteria);
 
+        UpdatePreyState();
+        UpdateDangerState();
     }
 
     private void Bacteria_OnDeath(object sender, EventArgs e) {
         BaseBacteria bacteria = sender as BaseBacteria;
         OnBacteriaInsightDisappear(bacteria);
-
-        UpdateDangerState();
-        UpdatePreyState();
     }
 
     private void UpdateDangerState() {
-        bool danger = listMacrophageInRange.Count > 0;
-
+        bool danger = listMacrophageInRange.Count > 0 || listHuntingBacteriaInRange.Count > 0;
+        
         if (!isInDanger && danger) {
             isInDanger = true;
             OnDangerDetected?.Invoke(this, EventArgs.Empty);
@@ -110,7 +140,7 @@ public class BacteriaSight : MonoBehaviour {
         foreach (BaseBacteria bacteria in listPreyInRange) {
             float distance = (fromPosition - bacteria.transform.position).sqrMagnitude;
 
-            if (distance < minDistance * minDistance) {
+            if (distance < minDistance) {
                 closest = bacteria;
                 minDistance = distance;
             }

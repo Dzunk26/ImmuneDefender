@@ -38,6 +38,7 @@ public class DormantBacteria : BaseBacteria, IUntargetable {
     }
 
     private void TryEnterDormancy() {
+        if (bacteriaState == BacteriaState.Hunt) return;
         if (isDormant) return;
 
         if (UnityEngine.Random.value < dormancyChance) {

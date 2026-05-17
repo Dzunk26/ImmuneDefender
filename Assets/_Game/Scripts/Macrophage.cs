@@ -51,6 +51,7 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
 
     private void Update() {
         UpdateTarget();
+        SelfDestruct();
 
         switch (state) {
             case 

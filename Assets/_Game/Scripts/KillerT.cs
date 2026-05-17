@@ -45,6 +45,7 @@ public class KillerT : MonoBehaviour {
 
     private void Update() {
         UpdateTarget();
+        SelfDestruct();
 
         switch (state) {
             case State.Wander: 
