@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5599239627666692819}
+  - component: {fileID: 8502252558115036297}
   - component: {fileID: 5728874646943721944}
   m_Layer: 0
   m_Name: KillerTSight
@@ -32,6 +33,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6867736921029373130}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &8502252558115036297
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7614364774419758095}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 15
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5728874646943721944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,13 +119,14 @@ MonoBehaviour:
   moveSpeed: 0.5
   chaseSpeed: 1.2
   turnSpeed: 3
-  attackDistance: 0.5
   waypointRadius: 2
   waypointAngle: 120
   waypointDistance: 0.1
   waypointTimerMax: 3
+  attackDistance: 0.5
   updateTargetTimerMax: 1
   aliveTimerMaxDefault: 18
+  killLimit: 5
 --- !u!135 &3282858129128459092
 SphereCollider:
   m_ObjectHideFlags: 0

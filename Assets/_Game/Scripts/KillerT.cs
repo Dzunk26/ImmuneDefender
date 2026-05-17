@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 //te bao limpho T
-public class KillerT : MonoBehaviour {
+public class KillerT : MonoBehaviour, ILimitedLifetime, IBuffable {
     [SerializeField] private string poolTag;
 
     [Header("Movement")]
@@ -13,17 +13,17 @@ public class KillerT : MonoBehaviour {
     [SerializeField] private float moveSpeed = 0.5f;
     [SerializeField] private float chaseSpeed = 1.2f;
     [SerializeField] private float turnSpeed = 3f;
-    [SerializeField] private float attackDistance = 0.5f;
 
     [Header("Wander")]
     [SerializeField] private float waypointRadius = 2f;
     [SerializeField] private float waypointAngle = 120f;
     [SerializeField] private float waypointDistance = 0.1f;
     [SerializeField] private float waypointTimerMax = 3f;
-    
+
+    [SerializeField] private float attackDistance = 0.5f;
     [SerializeField] private float updateTargetTimerMax = 1f;
     [SerializeField] private float aliveTimerMaxDefault = 18f;
-    
+    [SerializeField] private int phagocytosisLimitDefault = 5;
 
     private enum State { Wander, Chase }
     private State state = State.Wander;
@@ -33,7 +33,15 @@ public class KillerT : MonoBehaviour {
     private float waypointTimer;
     private float updateTargetTimer;
     private float aliveTimerMax;
-    private float aliveTimer;
+    private int phagocytosisLimit;
+
+    public int PhagocytosisCount { get; private set; }
+
+    public int PhagocytosisLimit => phagocytosisLimit;
+
+    public float LifeTimer { get; private set; }
+
+    public float LifeTimeLimit => aliveTimerMax;
 
     private void OnEnable() {
         OnInit();
@@ -45,7 +53,7 @@ public class KillerT : MonoBehaviour {
 
     private void Update() {
         UpdateTarget();
-        SelfDestruct();
+        OnAlive();
 
         switch (state) {
             case State.Wander: 
@@ -57,6 +65,10 @@ public class KillerT : MonoBehaviour {
         }
     }
 
+    private void OnDisable() {
+        OnDespawn();
+    }
+
     private void OnInit() {
         aliveTimerMax = UnityEngine.Random.Range(aliveTimerMaxDefault - 1, aliveTimerMaxDefault + 1);
 
@@ -64,7 +76,13 @@ public class KillerT : MonoBehaviour {
         currentTarget = null;
         updateTargetTimer = 0f;
         waypointTimer = 0f;
-        aliveTimer = 0f;
+        LifeTimer = 0f;
+        PhagocytosisCount = 0;
+        phagocytosisLimit = phagocytosisLimitDefault;
+    }
+
+    private void OnDespawn() {
+        HelperTHandler.Instance.Unregister(this);
     }
 
     private void UpdateTarget() {
@@ -89,13 +107,6 @@ public class KillerT : MonoBehaviour {
         ObjectPooler.Instance.ReturnToPool(poolTag, gameObject);
     }
 
-    private void SelfDestruct() {
-        aliveTimer += Time.deltaTime;
-        if (aliveTimer > aliveTimerMax) {
-            Die();
-        }
-    }
-
     private void HandleWander() {
         waypointTimer += Time.deltaTime;
         bool arrived = (transform.position - currentWaypoint).sqrMagnitude < waypointDistance * waypointDistance;
@@ -110,17 +121,25 @@ public class KillerT : MonoBehaviour {
     }
 
     private void HandleChase() {
-        if (currentTarget == null) { state = State.Wander; return; }
+        if (currentTarget == null) { 
+            state = State.Wander; 
+            return; 
+        }
 
         MoveToward(currentTarget.transform.position, chaseSpeed);
-
-        float sqrDistance = (transform.position - currentTarget.transform.position).sqrMagnitude;
-        if (sqrDistance < attackDistance * attackDistance) {
-            Attack(currentTarget);
-        }
+        HandleAttack(currentTarget);
     }
 
-    private void Attack(Macrophage target) {
+    private void HandleAttack(Macrophage target) {
+        float sqrDistance = (transform.position - target.transform.position).sqrMagnitude;
+        if (sqrDistance > attackDistance * attackDistance) return;
+        if (sqrDistance >= attackDistance * attackDistance) {
+            LifeTimer += Time.deltaTime;
+            return;
+        }
+
+        LifeTimer = 0f;
+        OnPhagocytosis();
         target.Apoptosis();
     }
 
@@ -143,5 +162,24 @@ public class KillerT : MonoBehaviour {
         Vector3 randomDirection = rotation * Vector3.forward;
         float randomRadius = UnityEngine.Random.Range(waypointRadius * 0.5f, waypointRadius);
         return transform.position + randomDirection * randomRadius;
+    }
+
+    public void OnPhagocytosis() {
+        PhagocytosisCount++;
+        if (PhagocytosisCount >= phagocytosisLimit) {
+            Die();
+        }
+    }
+
+    public void OnAlive() {
+        LifeTimer += Time.deltaTime;
+        if (LifeTimer >= LifeTimeLimit) {
+            Die();
+        }
+    }
+
+    public void ApplyBuff(HelperTConfigSO config) {
+        aliveTimerMax += config.lifeTimeBonus;
+        phagocytosisLimit += config.phacytosisLimitBonus;
     }
 }

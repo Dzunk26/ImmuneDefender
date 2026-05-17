@@ -8,16 +8,22 @@ public class AttackArea : MonoBehaviour, IAttackerStat {
     public int Accuracy => accuracy;
 
     [SerializeField] private MacrophageSight macrophageSight;
-    [SerializeField] private Collider attackCollider;
+    [SerializeField] private Macrophage macrophage;
+    [SerializeField] private int damage = 3;
+    [SerializeField] private int accuracy = 200;
+    [SerializeField] private float attackCoolDown = 0.5f;
 
-    private int damage = 3;
-    private int accuracy = 200;
     private bool isAttacking = true;
+    private float attackTimer;
+    private BaseBacteria currentTarget;
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.TryGetComponent(out BaseBacteria bacteria)) {
-            Phagocytosis(bacteria);
+    public void HandleAttack(Vector3 fromPosition) {
+        attackTimer += Time.deltaTime;
+        if (attackTimer < attackCoolDown) {
+            return;
         }
+
+        currentTarget = macrophageSight.GetClosestBacteria(fromPosition);
     }
 
     public void Phagocytosis(BaseBacteria bacteria) {
@@ -28,15 +34,5 @@ public class AttackArea : MonoBehaviour, IAttackerStat {
 
     public bool CheckAttackState() {
         return isAttacking;
-    }
-
-    public void ActiveAttack() {
-        isAttacking = true;
-        attackCollider.enabled = true;
-    }
-
-    public void DeactiveAttack() {
-        isAttacking = false;
-        attackCollider.enabled = false;
     }
 }

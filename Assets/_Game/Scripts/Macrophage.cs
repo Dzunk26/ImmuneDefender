@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //dai thuc bao
-public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
+public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable, ILimitedLifetime, IAttackerStat, IBuffable {
     public event EventHandler OnDeath;
     public event EventHandler OnApoptosis;
     public event EventHandler OnInfected;
-
-    [SerializeField] private string poolTag;
 
     [Header("Movement")]
     [SerializeField] private MacrophageSight macrophageSight;
@@ -23,8 +21,14 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
     [SerializeField] private float waypointDistance = 0.1f;
     [SerializeField] private float waypointTimerMax = 3f;
 
+    [SerializeField] private int damage = 3;
+    [SerializeField] private int accuracy = 200;
+    [SerializeField] private float attackCoolDown = 0.5f;
+    [SerializeField] private float attackDistance = 2f;
     [SerializeField] private float aliveTimerMaxDefault = 1f;
     [SerializeField] private float updateTargetTimerMax = 1f;
+    [SerializeField] private int phagocytosisLimitDefault = 8;
+    [SerializeField] private string poolTag;
 
     private enum State { Wander, Chase }
     private State state = State.Wander;
@@ -34,13 +38,22 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
     private float waypointTimer;
     private float updateTargetTimer;
     private float aliveTimerMax;
-    private float aliveTimer;
+    private float attackTimer;
+    private int phagocytosisLimit;
+
+    public int PhagocytosisCount { get; private set; }
+    public int PhagocytosisLimit => phagocytosisLimit;
+    public float LifeTimer { get; private set; }
+    public float LifeTimeLimit => aliveTimerMax;
 
     public bool IsInfected { get; private set; }
+    public int Damage => damage;
+    public int Accuracy => accuracy;
 
     private void OnEnable() {
         OnInit();
     }
+
 
     private void Start() {
         macrophageSight.OnBacteriaListChange += MacrophageSight_OnBacteriaListChange;
@@ -48,10 +61,9 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
         currentWaypoint = GetRandomWaypoint();
     }
 
-
     private void Update() {
         UpdateTarget();
-        SelfDestruct();
+        OnAlive();
 
         switch (state) {
             case 
@@ -63,6 +75,10 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
         }
     }
 
+    private void OnDisable() {
+        OnDespawn();
+    }
+
     private void OnInit() {
         aliveTimerMax = UnityEngine.Random.Range(aliveTimerMaxDefault - 1, aliveTimerMaxDefault + 1);
 
@@ -70,7 +86,14 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
         currentTarget = null;
         updateTargetTimer = 0f;
         waypointTimer = 0f;
-        aliveTimer = 0f;
+        LifeTimer = 0f;
+        PhagocytosisCount = 0;
+        phagocytosisLimit = phagocytosisLimitDefault;
+        HelperTHandler.Instance.Register(this);
+    }
+
+    private void OnDespawn() {
+        HelperTHandler.Instance.Unregister(this);
     }
 
     private void UpdateTarget() {
@@ -111,6 +134,20 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
         }
 
         MoveToward(currentTarget.transform.position, chaseSpeed);
+        HandleAttack(currentTarget);
+    }
+
+    private void HandleAttack(BaseBacteria target) {
+        float sqrDistance = (transform.position - target.transform.position).sqrMagnitude;
+        if (sqrDistance > attackDistance * attackDistance) return;
+        if (attackTimer <= attackCoolDown) {
+            attackTimer += Time.deltaTime;
+            return;
+        }
+
+        attackTimer = 0f;
+        OnPhagocytosis();
+        target.TakeDamage(this);
     }
 
     private void MoveToward(Vector3 targetPosition, float speed) {
@@ -138,13 +175,6 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
         return transform.position + randomDirection * randomRadius;
     }
 
-    private void SelfDestruct() {
-        aliveTimer += Time.deltaTime;
-        if(aliveTimer > aliveTimerMax) {
-            Die();
-        }
-    }
-
     public void TakeDamage(IAttackerStat attacker) {
         if (!IsInfected) return;
 
@@ -167,5 +197,24 @@ public class Macrophage : MonoBehaviour, IDamageable, IInfectable, IKillable {
         if (IsInfected) return;
         IsInfected = infected;
         if (infected) OnInfected?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void OnPhagocytosis() {
+        PhagocytosisCount++;
+        if (PhagocytosisCount >= phagocytosisLimit) {
+            Die();
+        }
+    }
+
+    public void OnAlive() {
+        LifeTimer += Time.deltaTime;
+        if (LifeTimer >= LifeTimeLimit) {
+            Die();
+        }
+    }
+
+    public void ApplyBuff(HelperTConfigSO config) {
+        aliveTimerMax += config.lifeTimeBonus;
+        phagocytosisLimit += config.phacytosisLimitBonus;
     }
 }
