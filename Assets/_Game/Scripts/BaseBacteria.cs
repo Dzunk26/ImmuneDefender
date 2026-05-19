@@ -67,6 +67,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
     private int hp = 1;
     private int damage = 2;
     private int accuracy = 100;
+    private float slowMultiplier = 1f;
 
     private Vector3 currentWaypoint;
     private float waypointTimer;
@@ -92,6 +93,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
         aliveTimer = 0;
         multiplicationTimer = UnityEngine.Random.Range(0, multiplicationTimerMaxDefault * 0.3f);
         hungerTimer = UnityEngine.Random.Range(0, hungerTimerMaxDefault * 0.3f);
+        RemoveSlow();
     }
 
     public virtual void TakeDamage(IAttackerStat attacker) {
@@ -304,7 +306,7 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
         }
 
         // Di chuyển thẳng về phía trước
-        transform.position += transform.forward * moveSpeed * Time.deltaTime;
+        transform.position += transform.forward * moveSpeed * slowMultiplier * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, 0f, transform.position.z); // lock Y
     }
 
@@ -340,5 +342,13 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
 
     public int GetSpeciesId() {
         return speciesId;
+    }
+
+    public void ApplySlow(float slowMulttiplier) {
+        this.slowMultiplier = slowMulttiplier;
+    }
+
+    public void RemoveSlow() {
+        this.slowMultiplier = 1f;
     }
 }
