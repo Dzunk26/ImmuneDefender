@@ -48,7 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0c1df2e513df346b1dd77ac0779f8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  macrophageSight: {fileID: 6854464202051196983}
   moveSpeed: 0.5
   chaseSpeed: 1
   turnSpeed: 3
@@ -56,14 +55,15 @@ MonoBehaviour:
   waypointAngle: 120
   waypointDistance: 0.1
   waypointTimerMax: 3
+  aliveTimerMaxDefault: 20
+  phagocytosisLimitDefault: 8
+  attackDistance: 2
+  attackCooldown: 0.5
+  updateTargetTimerMax: 1
+  poolTag: Macrophage
   damage: 3
   accuracy: 200
-  attackCoolDown: 0.5
-  attackDistance: 2
-  aliveTimerMaxDefault: 1
-  updateTargetTimerMax: 1
-  killLimit: 8
-  poolTag: Macrophage
+  macrophageSight: {fileID: 6854464202051196983}
 --- !u!135 &5098107587161624722
 SphereCollider:
   m_ObjectHideFlags: 0

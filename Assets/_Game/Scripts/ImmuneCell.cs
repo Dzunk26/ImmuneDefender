@@ -19,7 +19,7 @@ public abstract class ImmuneCell<TTarget> : MonoBehaviour, IBuffable, ILimitedLi
 
     [Header("Stats")]
     [SerializeField] private float aliveTimerMaxDefault = 60f;
-    [SerializeField] private int killLimitDefault = 8;
+    [SerializeField] private int phagocytosisLimitDefault = 8;
     [SerializeField] private float attackDistance = 2f;
     [SerializeField] private float attackCooldown = 0.5f;
     [SerializeField] private float updateTargetTimerMax = 1f;
@@ -61,7 +61,7 @@ public abstract class ImmuneCell<TTarget> : MonoBehaviour, IBuffable, ILimitedLi
 
     protected virtual void OnInit() {
         LifeTimeLimit = UnityEngine.Random.Range(aliveTimerMaxDefault - 1f, aliveTimerMaxDefault + 1f);
-        PhagocytosisLimit = killLimitDefault;
+        PhagocytosisLimit = phagocytosisLimitDefault;
         LifeTimer = 0f;
         PhagocytosisCount = 0;
         attackTimer = 0f;

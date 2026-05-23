@@ -24,4 +24,8 @@ public class ObjectManager : MonoBehaviour {
     public void Unregister(BaseBacteria bacteria) {
         allActiveBacterias.Remove(bacteria);
     }
+
+    public List<BaseBacteria> GetAllActiveBacterias() {
+        return allActiveBacterias;
+    }
 }

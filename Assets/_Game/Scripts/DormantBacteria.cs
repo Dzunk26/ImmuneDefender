@@ -4,25 +4,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //vi khuan co the ngu dong de ne he mien dich tan cong
-public class DormantBacteria : BaseBacteria, IUntargetable {
+public class DormantBacteria : BaseBacteria, IDormantable {
     public event EventHandler OnBecameUntargetable;
     public event EventHandler OnBecameTargetable;
 
-    private float dormancyTimer;
-    private float dormancyTimerMax = 10f;
-    private float dormancyChance = 0.5f;
-    private bool isDormant = false;
+    [SerializeField] private float dormancyTimerMax = 10f;
+    [SerializeField] private float dormancyChance = 0.5f;
 
-    private void OnEnable() {
-        bacteriaSight.OnDangerDetected += BacteriaSight_OnDangerDetected;
-    }
+    private float dormancyTimer;
+
+    public float DormancyTimerMax => dormancyTimerMax;
+    public float DormancyChance => dormancyChance;
+    public bool IsDormant { get; private set; } = false;
 
     private void BacteriaSight_OnDangerDetected(object sender, System.EventArgs e) {
         TryEnterDormancy();
     }
 
+    public override void OnInit() {
+        base.OnInit();
+        IsDormant = false;
+        dormancyTimer = 0f;
+    }
+
+    protected override void HandleStart() {
+        bacteriaSight.OnDangerDetected += BacteriaSight_OnDangerDetected;
+        base.HandleStart();
+    }
+
     protected override void HandleUpdate() {
-        if (isDormant) {
+        if (IsDormant) {
             HandleDormancy();
         }
         else {
@@ -39,7 +50,7 @@ public class DormantBacteria : BaseBacteria, IUntargetable {
 
     private void TryEnterDormancy() {
         if (bacteriaState == BacteriaState.Hunt) return;
-        if (isDormant) return;
+        if (IsDormant) return;
 
         if (UnityEngine.Random.value < dormancyChance) {
             EnterDormancy();
@@ -48,7 +59,7 @@ public class DormantBacteria : BaseBacteria, IUntargetable {
 
     //vi khuan ngu dong
     private void EnterDormancy() {
-        isDormant = true;
+        IsDormant = true;
         dormancyTimer = 0f;
         bodyCollider.enabled = false;
         OnBecameUntargetable.Invoke(this, EventArgs.Empty);
@@ -56,7 +67,7 @@ public class DormantBacteria : BaseBacteria, IUntargetable {
 
     //vi khuan hoat dong tro lai
     private void Resuscitate() {
-        isDormant = false;
+        IsDormant = false;
         bodyCollider.enabled = true;
         OnBecameTargetable?.Invoke(this, EventArgs.Empty);
     }

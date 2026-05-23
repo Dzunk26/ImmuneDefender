@@ -712,7 +712,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &963194228
@@ -1983,6 +1983,10 @@ PrefabInstance:
     - target: {fileID: 2542708328174074786, guid: 16508adb9bfb1d645a86ed70fde0229a, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4498569442804956758, guid: 16508adb9bfb1d645a86ed70fde0229a, type: 3}
+      propertyPath: aliveTimerMaxDefault
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5098107587161624722, guid: 16508adb9bfb1d645a86ed70fde0229a, type: 3}
       propertyPath: m_Radius

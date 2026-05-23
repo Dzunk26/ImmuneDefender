@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable {
+public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable, IAntibioticResistable {
     public event EventHandler OnDeath;
     public event EventHandler OnStartHunting;
     public event EventHandler OnStopHunting;
@@ -23,6 +23,8 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
     public int Accuracy => accuracy;
 
     public bool IsHunting => bacteriaState == BacteriaState.Hunt;
+
+    public float ResistanceLevel { get; private set; } = 0f;
 
     [SerializeField] private float mapRadius = 500f; // ban kinh map
     [SerializeField] private float eatDistance = 1f; 
@@ -77,10 +79,9 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
     private void OnEnable() {
         OnInit();
     }
+
     private void Start() {
-        cameraTranform = Camera.main.transform;
-        bacteriaSight.OnPreyChange += BacteriaSight_OnPreyChange;
-        currentWaypoint = GetRandomWaypoint();
+        HandleStart();
     }
 
     public virtual void OnInit() {
@@ -144,6 +145,12 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
         }
     }
 
+    protected virtual void HandleStart() {
+        cameraTranform = Camera.main.transform;
+        bacteriaSight.OnPreyChange += BacteriaSight_OnPreyChange;
+        currentWaypoint = GetRandomWaypoint();
+    }
+
     protected virtual void HandleUpdate() {
         HandleState();
         HandleMultiplication(poolTag);
@@ -170,20 +177,18 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
         multiplicationTimer += Time.deltaTime;
 
         if (multiplicationTimer > multiplicationTimerMax) {
-            GameObject newBacteria = ObjectPooler.Instance.GetFromPool(poolTag);
-            if (newBacteria == null) return;
+            GameObject childBacteria = ObjectPooler.Instance.GetFromPool(poolTag);
+            if (childBacteria == null) return;
 
-            //float randomAngle = UnityEngine.Random.Range(120f, 240f);
-            //float childAngle = transform.eulerAngles.y + randomAngle;
-
-            newBacteria.transform.position = transform.position;
-            newBacteria.transform.rotation = transform.rotation;
+            childBacteria.transform.position = transform.position;
+            childBacteria.transform.rotation = transform.rotation;
             
-            if (newBacteria.TryGetComponent(out BaseBacteria bacteria)) {
+            if (childBacteria.TryGetComponent(out BaseBacteria bacteria)) {
                 bacteria.SetWaypoint(GetRandomWaypoint(180f));
+                bacteria.IncreaseResistance(ResistanceLevel);
             }
 
-            multiplicationTimer = 0f; // reset timer
+            multiplicationTimer = 0f;
         }
     }
 
@@ -350,5 +355,9 @@ public class BaseBacteria : MonoBehaviour, IDamageable, IAttackerStat, IHuntable
 
     public void RemoveSlow() {
         this.slowMultiplier = 1f;
+    }
+
+    public void IncreaseResistance(float resistance) {
+        ResistanceLevel = Mathf.Clamp01(ResistanceLevel + resistance);
     }
 }

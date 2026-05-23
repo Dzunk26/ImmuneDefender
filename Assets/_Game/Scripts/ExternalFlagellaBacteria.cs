@@ -13,6 +13,12 @@ public class ExternalFlagellaBacteria : BaseBacteria, IDodgeable {
     private float slideTimer;
     private Vector3 slideDirection;
 
+    public override void OnInit() {
+        base.OnInit();
+        isSliding = false;
+        slideTimer = 0f;
+    }
+
     protected override void HandleUpdate() {
         HandleMultiplication(poolTag);
         HandleUpdateActivityLevel();

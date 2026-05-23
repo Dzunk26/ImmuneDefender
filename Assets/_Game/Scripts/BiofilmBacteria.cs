@@ -18,9 +18,10 @@ public class BiofilmBacteria : BaseBacteria, IBiofilmable
     private bool isBreak = true;
 
     public override void OnInit() {
+        base.OnInit();
         recoverShieldTimerMax = UnityEngine.Random.Range(recoverShieldTimerMaxDefault - 0.5f, recoverShieldTimerMaxDefault + 0.5f);
         recoverShieldTimer = UnityEngine.Random.Range(0, recoverShieldTimerMax * 0.5f);
-        base.OnInit();
+        isBreak = true;
     }
 
     protected override void HandleUpdate() {

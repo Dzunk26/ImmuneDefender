@@ -4,19 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //vi khuan co the song ky sinh trong dai thuc bao
-public class IntracellularBacteria : BaseBacteria, IUntargetable {
+public class IntracellularBacteria : BaseBacteria, IIntracelullarable {
     public event EventHandler OnBecameUntargetable;
     public event EventHandler OnBecameTargetable;
 
-    private Macrophage currentHost;
+    private IInfectableImmuneCell currentHost;
 
-    private bool isParasiting => currentHost != null;
+    public bool IsParasiting { get; private set; }
 
     private void OnTriggerEnter(Collider other) {
-        if (isParasiting) return;
-        if (other.TryGetComponent(out Macrophage macrophage)) {
-            EnterHost(macrophage);
+        if (IsParasiting) return;
+        if (other.TryGetComponent(out IInfectableImmuneCell infcetable)) {
+            EnterHost(infcetable);
         }
+    }
+
+    public override void OnInit() {
+        base.OnInit();
+        currentHost = null;
+        IsParasiting = currentHost != null;
     }
 
     protected override void HandleUpdate() {
@@ -24,19 +30,19 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
         HandleUpdateActivityLevel();
         SelfDestruct();
 
-        if (!isParasiting) {
+        if (!IsParasiting) {
             HandleMovevement();
             HandleState();
         }
     }
 
-    public void EnterHost(Macrophage host) {
+    public void EnterHost(IInfectableImmuneCell host) {
         currentHost = host;
-        currentHost.OnDeath += Macrophage_OnDeath;
-        currentHost.OnApoptosis += Macrophage_OnApoptosis;
+        currentHost.OnDeath += PhagocyticCell_OnDeath;
+        currentHost.OnApoptosis += PhagocyticCell_OnApoptosis;
         currentHost.SetInfected(true);
 
-        transform.SetParent(host.transform);
+        transform.SetParent((host as MonoBehaviour).transform);
         transform.localPosition = Vector3.zero;
 
         bacteriaVisual.SetActive(false);
@@ -44,21 +50,23 @@ public class IntracellularBacteria : BaseBacteria, IUntargetable {
         OnBecameUntargetable?.Invoke(this, EventArgs.Empty);
     }
 
-    private void Macrophage_OnApoptosis(object sender, EventArgs e) {
-        currentHost.OnDeath -= Macrophage_OnDeath;
-        currentHost.OnApoptosis -= Macrophage_OnApoptosis;
+    private void PhagocyticCell_OnApoptosis(object sender, EventArgs e) {
+        UnsubscribePhagocyticCell();
         Die();
     }
 
-    private void Macrophage_OnDeath(object sender, EventArgs e) {
-        currentHost.OnDeath -= Macrophage_OnDeath;
-        currentHost.OnApoptosis -= Macrophage_OnApoptosis;
+    private void PhagocyticCell_OnDeath(object sender, EventArgs e) {
+        UnsubscribePhagocyticCell();
         ExitHost();
+    }
+
+    private void UnsubscribePhagocyticCell() {
+        currentHost.OnDeath -= PhagocyticCell_OnDeath;
+        currentHost.OnApoptosis -= PhagocyticCell_OnApoptosis;
     }
 
     private void ExitHost() {
         currentHost.SetInfected(false);
-
         transform.SetParent(null);
 
         bacteriaVisual.SetActive(true);
